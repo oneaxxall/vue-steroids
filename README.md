@@ -385,26 +385,119 @@ npm install vue@2.7.16
 
 ---
 
-## 📊 Feature Comparison
+## 📊 Perbandingan Detail: Vue 2.7 Default vs Vue Steroids
 
-| Feature | Vue 2 Original | Vue 2 Reborn | Vue 3 |
-|---------|----------------|--------------|-------|
-| HTTP Client | ❌ External | ✅ **Built-in** | ❌ External |
-| State Management | ❌ Vuex | ✅ **Built-in** | ✅ Pinia |
-| Dynamic Components | ❌ Manual | ✅ **Auto** | ⚠️ Partial |
-| Lazy Loading | ❌ Complex | ✅ **Simple** | ✅ Good |
-| Options API | ✅ Yes | ✅ **Yes** | ⚠️ Still supported |
-| Composition API | ❌ No | ❌ No | ✅ Yes |
-| TypeScript | ⚠️ Limited | ⚠️ Same | ✅ Excellent |
-| Bundle Size | 33kb | ~90kb | 33kb |
-| Learning Curve | Easy | Easy | Medium |
+### Perbedaan dari Segi Source Code
 
-**Best for:**
-- ✅ Legacy projects that need modern features
-- ✅ Teams not ready for Composition API
-- ✅ Rapid prototyping
-- ✅ Small to medium applications
-- ✅ Learning Vue for the first time
+| Aspek | Vue 2.7 (Default) | Vue Steroids (Fork) |
+|-------|:-----------------:|:-------------------:|
+| **Package** | `vue` by Evan You | `vue` (fork, modified) |
+| **Repository** | [github.com/vuejs/vue](https://github.com/vuejs/vue) | [github.com/oneaxxall/vue-steroids](https://github.com/oneaxxall/vue-steroids) |
+| **Runtime Dependencies** | ❌ **None** (zero dependency) | ✅ **Axios** (`axios@^1.14.0`) |
+| **Bundle Size** | ~33kb (gzip) | ~90kb (gzip) — includes axios + additional features |
+
+---
+
+### ⚙️ Inisialisasi & Instance
+
+| Fitur | Vue 2.7 (Default) | Vue Steroids | Keterangan |
+|-------|:-----------------:|:------------:|------------|
+| **Register component setelah `new Vue()`** | ❌ **Tidak bisa** — komponen harus di-register dengan `Vue.component()` SEBELUM `new Vue()`. Jika register setelah init, komponen tidak akan pernah di-resolve. | ✅ **Bisa** — `Vue.defineDynamicComponent('nama', { ... })` bekerja kapan saja. Semua instance Vue langsung di-`forceUpdate` otomatis. | **🔥 Problem utama yang diselesaikan.** |
+| **Auto-Resolve unregistered component** | ❌ **Tidak ada** — jika `<input-text>` dipanggil di template `form-component` tapi belum di-register, Vue hanya menampilkan warning dan komponen tidak dirender. | ✅ **Ada** — jika `Vue.config.autoFetchComponents = true`, Vue otomatis fetch komponen dari server (`/components/input/input-text.tpl`), parse, register, dan re-render. | *Lihat `src/core/util/options.ts` — fungsi `defineDynamicComponent`* |
+| **Force update instance saat komponen baru didaftarkan** | ❌ Tidak ada mekanisme otomatis | ✅ Semua instance register (`vueInstances[]`) otomatis di-`$forceUpdate()` saat `defineDynamicComponent()` dipanggil | *Lihat `src/core/instance/init.ts` — `registerVueInstance(vm)`* |
+| **Store otomatis di inject ke instance** | ❌ Harus install & setup Vuex manual | ✅ `vm.$store` langsung tersedia jika `Vue.config.store` atau `vm.$options.store` diset | *Lihat `src/core/instance/init.ts`* |
+| **Async components (`asyncComponents` option)** | ❌ Tidak ada | ✅ Bisa load komponen async via `asyncComponents: ['/path/to/comp']` di options | *Lihat `src/core/util/dynamic-component-loader.ts`* |
+| **`$loading` reactive state** | ❌ Tidak ada | ✅ `vm.$loading` otomatis terdefinisi secara reactive untuk semua instance | *Lihat `src/core/instance/state.ts` — `defineReactive(vm, '$loading', false)`* |
+
+---
+
+### 🌐 HTTP Client (Axios)
+
+| Fitur | Vue 2.7 (Default) | Vue Steroids | Keterangan |
+|-------|:-----------------:|:------------:|------------|
+| **Built-in HTTP methods** | ❌ Harus install `axios` & import di setiap file | ✅ `this.get()`, `this.post()`, `this.put()`, `this.patch()`, `this.delete()`, `this.head()`, `this.options()` — langsung tersedia di prototype | *Lihat `src/core/instance/http.ts`* |
+| **Form data methods** | ❌ Tidak ada | ✅ `this.postForm()`, `this.putForm()`, `this.patchForm()` untuk upload file | *Lihat `src/core/instance/http.ts`* |
+| **Global interceptors via config** | ❌ Harus setup axios instance manual | ✅ `Vue.config.axiosRequestInterceptor`, `Vue.config.axiosResponseInterceptor`, dll | *Lihat `src/core/config.ts`* |
+| **Auto token management** | ❌ Manual | ✅ `Vue.config.axiosToken` — otomatis ditambahkan ke header Authorization | *Lihat `src/core/util/http.ts`* |
+| **Global headers** | ❌ Manual | ✅ `Vue.config.axiosHeaders` — headers kustom global | *Lihat `src/core/util/http.ts`* |
+| **Base URL global** | ❌ Manual | ✅ `Vue.config.axiosBaseURL` — base URL untuk semua request | *Lihat `src/core/util/http.ts`* |
+| **Timeout global** | ❌ Manual | ✅ `Vue.config.axiosTimeout` — default timeout semua request | *Lihat `src/core/util/http.ts`* |
+| **API Namespace (`api` option)** | ❌ Tidak ada | ✅ Component option `api: { ... }` — method-method HTTP dipisah di namespace `this.api` | *Lihat `src/core/instance/state.ts` — `initApi()`* |
+
+---
+
+### 🏪 State Management
+
+| Fitur | Vue 2.7 (Default) | Vue Steroids | Keterangan |
+|-------|:-----------------:|:------------:|------------|
+| **Store built-in (tanpa Vuex)** | ❌ Harus install `vuex` | ✅ `Vue.config.store = { state, getters, mutations, actions }` | *Lihat `src/core/util/store.ts`* |
+| **Helper functions** | ❌ Hanya dari Vuex | ✅ `Vue.mapState()`, `Vue.mapGetters()`, `Vue.mapMutations()`, `Vue.mapActions()` | *Lihat `src/core/global-api/index.ts`* |
+| **Modules support** | ❌ Hanya dari Vuex | ✅ Store modules dengan sub-state/mutations sendiri | *Lihat `src/core/util/store.ts`* |
+| **Subscribers (seperti Vuex plugins)** | ❌ Tidak ada | ✅ `store.subscribe()` — callback setiap kali mutation di-commit | *Lihat `src/core/util/store.ts`* |
+
+---
+
+### 🧭 Routing
+
+| Fitur | Vue 2.7 (Default) | Vue Steroids | Keterangan |
+|-------|:-----------------:|:------------:|------------|
+| **Built-in router (tanpa vue-router)** | ❌ Harus install `vue-router` | ✅ Router ringan built-in, komponen `<router-view>` & `<router-link>` | *Lihat `src/core/util/router.ts`* |
+| **Reactive route object** | ❌ Hanya dari vue-router | ✅ `this.$route` reactive dengan path, query, hash, segments | *Lihat `src/core/util/router.ts`* |
+| **Layout support** | ❌ Hanya dari vue-router | ✅ Layout pages via `layout-{name}` components | *Lihat `src/core/util/router-components.ts`* |
+| **Route watchers** | ❌ Hanya dari vue-router | ✅ `Vue.config.router.watch = { '/path': callback }` | *Lihat `docs/steroids/ROUTE_WATCHERS.md`* |
+
+---
+
+### ⚡ Real-Time Communication (RTC)
+
+| Fitur | Vue 2.7 (Default) | Vue Steroids | Keterangan |
+|-------|:-----------------:|:------------:|------------|
+| **WebSocket/Pusher built-in** | ❌ Harus install `pusher-js` atau `laravel-echo` | ✅ RTC Driver native dengan dukungan Pusher/Reverb protocol | *Lihat `src/core/util/rtc.ts`* |
+| **Socket config global** | ❌ Tidak ada | ✅ `Vue.config.socket = { enabled, broadcaster, key, host, port, authEndpoint }` | *Lihat `src/core/config.ts`* |
+| **Channel methods di instance** | ❌ Tidak ada | ✅ `this.$rtc.channel()`, `this.$rtc.private()`, `this.$rtc.presence()` | *Lihat `src/core/instance/rtc.ts`* |
+
+---
+
+### 🧩 Dynamic Components & Loading
+
+| Fitur | Vue 2.7 (Default) | Vue Steroids | Keterangan |
+|-------|:-----------------:|:------------:|------------|
+| **Register component kapan saja** | ❌ **Harus sebelum `new Vue()`** | ✅ `Vue.defineDynamicComponent()` — bisa setelah `new Vue()` | *Lihat `src/core/util/options.ts`* |
+| **Auto-fetch dari server** | ❌ Tidak ada | ✅ Jika `autoFetchComponents = true`, unregistered component otomatis di-fetch | *Lihat `src/core/util/options.ts`* |
+| **Dynamic Component Loader via AJAX** | ❌ Tidak ada | ✅ `this.fetchDynamicComponent(name, path, fallback)` — load `.tpl` dari server | *Lihat `src/core/util/dynamic-component-loader.ts`* |
+| **Loading directive (`v-loading`)** | ❌ Tidak ada | ✅ `v-loading` dengan spinner SVG dan blur overlay | *Lihat `src/core/directives/loading.ts`* |
+| **Loading template** | ❌ Tidak ada | ✅ `loadingTemplate` option untuk komponen async | *Lihat `docs/steroids/LOAD_ASYNC_COMPONENT.md`* |
+
+---
+
+### 🔧 Utility & Lainnya
+
+| Fitur | Vue 2.7 (Default) | Vue Steroids | Keterangan |
+|-------|:-----------------:|:------------:|------------|
+| **Portal / Teleport** | ❌ Tidak ada | ✅ Komponen `<Portal to="target">` & `<PortalTarget name="target">` (seperti Vue 3 Teleport) | *Lihat `src/core/util/portal.ts`* |
+| **Storage Manager** | ❌ Tidak ada | ✅ `Vue.$storage.set()`, `Vue.$storage.get()`, `Vue.$storage.remove()` — dengan namespace & expiry | *Lihat `src/core/util/storage.ts`* |
+| **Hooks / Composables built-in** | ❌ Tidak ada | ✅ `this.onClickOutside(refName, handler)` — tanpa library tambahan | *Lihat `src/core/util/hooks.ts`* |
+| **Standalone Reactive System** | ❌ Tidak ada | ✅ `Vue.reactive(name, initialValue)` — reactive store independen di luar komponen | *Lihat `src/core/util/reactive.ts`* |
+| **Browser `require()`** | ❌ Tidak ada | ✅ `Vue.require()` / `Vue.requireAsync()` — load module JS secara dinamis | *Lihat `src/core/util/require.ts`* |
+| **Composition API (Vue 3 backport)** | ⚠️ Terbatas (resmi dari Vue) | ✅ Sama seperti Vue 2.7 (ref, reactive, computed, watch) | *Lihat `src/v3/`* |
+| **Mixins system** | ❌ Tidak ada | ✅ `Vue.mixin()` custom | *Lihat `docs/steroids/MIXINS.md`* |
+| **XML Props parser** | ❌ Tidak ada | ✅ Parse XML attributes menjadi props komponen | *Lihat `docs/steroids/ODOO_XML_PARAMS.md`* |
+
+---
+
+### 💥 Ringkasan: Masalah yang Diselesaikan
+
+| Masalah di Vue 2.7 Default | Solusi di Vue Steroids |
+|----------------------------|------------------------|
+| Komponen harus di-register SEBELUM `new Vue()`. Jika ada komponen yang di-load belakangan, tidak bisa di-resolve. | **`Vue.defineDynamicComponent()`** — register kapan saja, auto forceUpdate semua instance. |
+| Jika `<input-text>` dipanggil di template `form-component` tapi belum di-load, Vue hanya kasih warning dan komponen tidak tampil. | **Auto-Resolve** — otomatis fetch dari server, parse, register, & render ulang. |
+| HTTP client (axios) harus install & import terpisah di setiap file. | **Built-in HTTP** — 11 method langsung di `this`. |
+| State management harus install Vuex, setup store, plugin, dll. | **Built-in Store** — cukup `Vue.config.store = {...}`. |
+| Real-time communication harus install pusher-js / laravel-echo. | **Built-in RTC** — WebSocket/Pusher native. |
+| Routing harus install vue-router. | **Built-in Router** — `<router-view>` & `<router-link>` siap pakai. |
+| Teleport/Portal tidak ada di Vue 2. | **Portal** — `<Portal to="target">` seperti Vue 3 Teleport. |
+| Loading state management manual. | **v-loading** directive + **$loading** reactive property. |
+| LocalStorage management manual. | **$storage** plugin — get/set/remove + expiry. |
 
 ---
 
