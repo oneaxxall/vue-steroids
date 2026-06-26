@@ -310,6 +310,43 @@ header  →  /components/header.tpl
 
 ---
 
+### 6. ⚡ SSR Bundling (Server-Side Component Bundling)
+
+Optimasi pemuatan komponen dengan menggabungkan banyak request file `.tpl` menjadi satu bundle JavaScript dari server:
+
+```javascript
+// Cukup aktifkan SSR mode
+Vue.config.serverSide = true
+Vue.config.serverSideURL = 'http://localhost:8485/bundle'
+
+// Async components otomatis di-batch
+{
+  asyncComponents: [
+    '/path/to/heavy-chart',
+    '/path/to/data-table',
+    '/path/to/map-view'
+  ]
+}
+```
+
+**Cara Kerja:**
+1. Client mengumpulkan semua path komponen yang belum di-load
+2. Dikirim sebagai satu request POST ke `serverSideURL`
+3. Server merespon dengan bundle JavaScript berisi `Vue.defineDynamicComponent()` untuk setiap komponen
+4. Client mengeksekusi bundle via **Fetch + Script Injection**
+5. Semua komponen langsung terdaftar dan siap pakai
+
+**Features:**
+- ✅ Batch request (satu request untuk banyak komponen)
+- ✅ Smart caching (hanya komponen yang belum dimuat yang di-request)
+- ✅ Dynamic Script Injection dengan `sourceURL` untuk debugging
+- ✅ Fallback jika bundle gagal di-load
+- ✅ Compatible dengan `asyncComponents` option
+
+📖 [Baca dokumentasi lengkap →](docs/steroids/CONFIGURATIONS.md#3-dynamic-component-loader)
+
+---
+
 ## 🚀 Quick Start
 
 ### Installation
@@ -381,6 +418,7 @@ npm install vue@2.7.16
 | **Dynamic Components** | Register components anytime | [Read →](docs/steroids/DYNAMIC_COMPONENTS_PERFORMANCE.md) |
 | **Component Loader** | Load from server via AJAX | [Read →](docs/steroids/DYNAMIC_COMPONENT_LOADER.md) |
 | **Auto-Resolve** | Automatic component fetching | [Read →](docs/steroids/AUTO_RESOLVE_COMPONENTS.md) |
+| **SSR Bundling** | Server-Side component bundling | [Read →](docs/steroids/CONFIGURATIONS.md#3-dynamic-component-loader) |
 | **Performance** | Optimization tips | [Read →](docs/steroids/DYNAMIC_COMPONENTS_PERFORMANCE.md) |
 | **Changelog** | All changes | [Read →](CHANGELOG.md) |
 
