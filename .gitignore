@@ -16,4 +16,5 @@ dist
 temp
 push
 pr
+gitreset
 types/v3-generated.d.ts
