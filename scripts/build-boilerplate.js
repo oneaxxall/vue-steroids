@@ -93,7 +93,6 @@ function copyBoilerplate() {
   const exclude = [
     'node_modules',
     path.join('public', 'js', 'vue'), // sudah di-copy terpisah dengan versi compiled
-    'scripts', // hmr.js & pack.js tidak perlu di dist (untuk production)
   ]
 
   function shouldExclude(relativePath) {
