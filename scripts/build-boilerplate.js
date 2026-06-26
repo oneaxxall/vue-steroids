@@ -59,9 +59,7 @@ function copyVueFiles() {
 
   const files = [
     { src: 'dist/vue.js', dest: 'vue.js' },
-    { src: 'dist/vue.min.js', dest: 'vue.min.js' },
-    { src: 'dist/vue.runtime.common.dev.js', dest: 'vue.runtime.common.dev.js' },
-    { src: 'dist/vue.runtime.common.prod.js', dest: 'vue.runtime.common.prod.js' }
+    { src: 'dist/vue.min.js', dest: 'vue.min.js' }
   ]
 
   files.forEach(({ src, dest }) => {
