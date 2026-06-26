@@ -139,9 +139,9 @@ Step 3: Copy Boilerplate Template
   ├── ✅ tailwind.config.js
   ├── ✅ public/css/
   ├── ✅ components/
-  ├── ⏭️  node_modules/ (skipped)
-  ├── ⏭️  public/js/vue/ (skipped — sudah di-copy step 2)
-  └── ⏭️  scripts/ (skipped — hmr.js & pack.js hanya untuk dev)
+| ├── ✅ scripts/
+| ├── ⏭️  node_modules/ (skipped)
+| └── ⏭️  public/js/vue/ (skipped — sudah di-copy step 2)
 
 Step 4: Generate index.html
 ─────────────────────────────────────────────────────
