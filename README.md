@@ -375,6 +375,7 @@ npm install vue@2.7.16
 
 | Topic | Description | Link |
 |-------|-------------|------|
+| **Full Configuration** | Semua konfigurasi lengkap (berdasarkan source code) | [Read →](docs/steroids/CONFIGURATIONS.md) |
 | **State Management** | Built-in store seperti Vuex | [Read →](docs/steroids/STATE_MANAGEMENT.md) |
 | **HTTP Client** | Axios integration | [Read →](docs/steroids/AXIOS_INTEGRATION.md) |
 | **Dynamic Components** | Register components anytime | [Read →](docs/steroids/DYNAMIC_COMPONENTS_PERFORMANCE.md) |
