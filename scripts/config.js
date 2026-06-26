@@ -1,6 +1,7 @@
 const path = require('path')
 const alias = require('@rollup/plugin-alias')
 const cjs = require('@rollup/plugin-commonjs')
+const json = require('@rollup/plugin-json')
 const replace = require('@rollup/plugin-replace')
 const node = require('@rollup/plugin-node-resolve').nodeResolve
 const ts = require('rollup-plugin-typescript2')
@@ -244,6 +245,7 @@ function genConfig(name) {
     input: opts.entry,
     external: opts.external || [],
     plugins: [
+      json(),
       alias({
         entries: Object.assign({}, aliases, opts.alias)
       }),

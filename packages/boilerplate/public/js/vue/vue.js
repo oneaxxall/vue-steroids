@@ -14091,12 +14091,13 @@
   /**
    * Inisialisasi HMR client
    * Dipanggil dari global-api/index.ts saat Vue.initGlobalAPI()
+   *
+   * Note: HMR client dibuat terlepas dari config.hmr value.
+   * Jika config.hmr = false, client dibuat tapi tidak connect.
+   * User bisa trigger connect manual via Vue.prototype.$hmr.connect()
+   * atau set Vue.config.hmr = true, lalu panggil Vue.connectHMR()
    */
   function initHMR(Vue) {
-      if (!config.hmr) {
-          debugLog('[HMR] HMR is disabled (Vue.config.hmr = false)');
-          return;
-      }
       if (typeof window === 'undefined') {
           debugLog('[HMR] HMR not available in non-browser environment');
           return;
@@ -14106,15 +14107,36 @@
           warn$2('[HMR] WebSocket is not available in this browser');
           return;
       }
-      // Buat instance HMR client
+      // Buat instance HMR client SELALU (meski disabled)
       hmrInstance = new HMRClient();
-      // Simpan di Vue prototype untuk akses dari komponen
       Vue.prototype.$hmr = hmrInstance;
-      // Auto-connect saat Vue siap
-      Vue.nextTick(function () {
-          hmrInstance.connect();
-      });
-      debugLog("[HMR] Client initialized (ws://".concat(config.hmrHost, ":").concat(config.hmrPort, ")"));
+      // Expose method untuk trigger connect manual
+      Vue.connectHMR = function () {
+          config.hmr = true;
+          if (hmrInstance && !hmrInstance['connected']) {
+              hmrInstance.connect();
+          }
+      };
+      Vue.disconnectHMR = function () {
+          config.hmr = false;
+          if (hmrInstance) {
+              hmrInstance.disconnect();
+          }
+      };
+      // Tunda koneksi ke setTimeout (macrotask) agar user punya kesempatan
+      // set Vue.config.hmr = true di <script> terpisah SEBELUM koneksi dilakukan.
+      // Vue.nextTick (microtask) tidak bisa karena microtask jalan
+      // setelah script tag saat ini, TAPI SEBELUM script tag berikutnya.
+      // setTimeout(macrotask) jalan setelah SEMUA script tag selesai.
+      setTimeout(function () {
+          if (config.hmr) {
+              hmrInstance.connect();
+              debugLog("[HMR] Auto-connected (ws://".concat(config.hmrHost, ":").concat(config.hmrPort, ")"));
+          }
+          else {
+              debugLog('[HMR] Client created (idle). Set config.hmr = true or call Vue.connectHMR() to connect');
+          }
+      }, 0);
   }
 
   function initGlobalAPI(Vue) {

@@ -362,15 +362,19 @@ export function initHMR(Vue: any): void {
     }
   }
 
-  // Auto-connect hanya jika config.hmr sudah true saat init
-  if (config.hmr) {
-    Vue.nextTick(() => {
+  // Tunda koneksi ke setTimeout (macrotask) agar user punya kesempatan
+  // set Vue.config.hmr = true di <script> terpisah SEBELUM koneksi dilakukan.
+  // Vue.nextTick (microtask) tidak bisa karena microtask jalan
+  // setelah script tag saat ini, TAPI SEBELUM script tag berikutnya.
+  // setTimeout(macrotask) jalan setelah SEMUA script tag selesai.
+  setTimeout(() => {
+    if (config.hmr) {
       hmrInstance!.connect()
-    })
-    debugLog(`[HMR] Auto-connected (ws://${config.hmrHost}:${config.hmrPort})`)
-  } else {
-    debugLog('[HMR] Client created (idle). Set config.hmr = true or call Vue.connectHMR() to connect')
-  }
+      debugLog(`[HMR] Auto-connected (ws://${config.hmrHost}:${config.hmrPort})`)
+    } else {
+      debugLog('[HMR] Client created (idle). Set config.hmr = true or call Vue.connectHMR() to connect')
+    }
+  }, 0)
 }
 
 /**
