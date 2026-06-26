@@ -20,6 +20,7 @@ import { initRtcClient, getRtcClient } from '../util/rtc'
 import { initRtc } from '../instance/rtc'
 import { LoadingDirective } from '../directives/loading'
 import { initRequire } from '../util/require'
+import { initHMR } from '../util/hmr'
 
 
 import {
@@ -141,6 +142,10 @@ export function initGlobalAPI(Vue: GlobalAPI) {
   // Initialize require functionality
   initRequire()
   debugLog('[Vue.initGlobalAPI] Require system initialized')
+
+  // Initialize HMR client (will auto-connect if config.hmr = true)
+  initHMR(Vue as any)
+  debugLog('[Vue.initGlobalAPI] HMR client initialized')
 
   // Register Portal components directly to avoid circular dependency issues
   const portalBusState = Vue.observable({ portals: {} as any })

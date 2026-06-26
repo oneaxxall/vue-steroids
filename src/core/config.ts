@@ -50,6 +50,13 @@ export interface Config {
     authEndpoint?: string
   }
 
+  // hmr config
+  hmr?: boolean
+  hmrFiles?: string[]
+  hmrPort?: number
+  hmrHost?: string
+  hmrSecure?: boolean
+
   // platform
   isReservedTag: (x: string) => boolean | undefined
   isReservedAttr: (x: string) => true | undefined
@@ -176,6 +183,33 @@ export default {
     forceTLS: false,
     authEndpoint: '/broadcasting/auth'
   },
+
+  /**
+   * Enable Hot Module Replacement
+   * When true, connects to HMR WebSocket server for hot reload
+   */
+  hmr: false,
+
+  /**
+   * File extensions to watch for HMR
+   * Server will only watch files with these extensions
+   */
+  hmrFiles: ['css', 'vue', 'tpl', 'js'],
+
+  /**
+   * HMR WebSocket server port
+   */
+  hmrPort: 8003,
+
+  /**
+   * HMR WebSocket server host
+   */
+  hmrHost: 'localhost',
+
+  /**
+   * Use secure WebSocket (wss://) instead of ws://
+   */
+  hmrSecure: false,
 
   /**
    * Is enable async component

@@ -99,7 +99,7 @@ export async function initAsyncComponents(vm: Component): Promise<void> {
  * <template> ... </template>
  * <style> ... </style>
  */
-function parseComponentFile(content: string): { script: string; template: string; loadingTemplate: string; style: string } {
+export function parseComponentFile(content: string): { script: string; template: string; loadingTemplate: string; style: string } {
   const result = {
     script: '',
     template: '',
