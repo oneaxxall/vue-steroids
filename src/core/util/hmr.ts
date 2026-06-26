@@ -24,12 +24,9 @@ class HMRClient {
   private reconnectAttempts: number = 0
   private maxReconnectAttempts: number = 20
   private reconnectDelay: number = 1000
-  private vueInstance: any
   private destroyed: boolean = false
 
-  constructor(vueInstance: any) {
-    this.vueInstance = vueInstance
-  }
+  constructor() {}
 
   /**
    * Connect ke HMR WebSocket server
@@ -59,7 +56,7 @@ class HMRClient {
           const data = JSON.parse(event.data)
           this.handleMessage(data)
         } catch (e) {
-          warn('[HMR] Invalid message from server:', e)
+          warn('[HMR] Invalid message from server: ' + (e as any)?.message)
         }
       }
 
@@ -71,8 +68,8 @@ class HMRClient {
         }
       }
 
-      this.socket.onerror = (error: Event) => {
-        warn('[HMR] Connection error:', error)
+      this.socket.onerror = (event: Event) => {
+        warn('[HMR] Connection error: ' + JSON.stringify({ type: event.type }))
       }
     } catch (e) {
       warn('[HMR] Failed to create WebSocket connection:', e)
