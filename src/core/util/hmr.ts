@@ -72,7 +72,7 @@ class HMRClient {
         warn('[HMR] Connection error: ' + JSON.stringify({ type: event.type }))
       }
     } catch (e) {
-      warn('[HMR] Failed to create WebSocket connection:', e)
+      warn('[HMR] Failed to create WebSocket connection')
       this.reconnect()
     }
   }
@@ -96,13 +96,17 @@ class HMRClient {
   private handleMessage(data: HMRMessage): void {
     switch (data.type) {
       case 'change':
-        this.handleFileChange(data.file, data.ext, data.content)
+        if (data.file && data.ext) {
+          this.handleFileChange(data.file, data.ext, data.content ?? undefined)
+        } else {
+          warn(`[HMR] Change event missing file or extension`)
+        }
         break
       case 'connected':
         debugLog(`[HMR] Server acknowledged (clientId: ${data.clientId})`)
         break
       case 'error':
-        warn(`[HMR] Server error: ${data.message}`)
+        warn(`[HMR] Server error: ${data.message || 'Unknown error'}`)
         break
       default:
         debugLog(`[HMR] Unknown message type: ${data.type}`)
@@ -183,7 +187,7 @@ class HMRClient {
           defineDynamicComponent(name, componentDef)
           debugLog(`[HMR] 🔄 Hot-reloaded component: ${name}`)
         } catch (e) {
-          warn(`[HMR] Failed to evaluate component script: ${name}`, e)
+          warn(`[HMR] Failed to evaluate component script: ${name}: ${(e as Error)?.message || 'Unknown error'}`)
         }
       } else {
         warn(`[HMR] No script found in: ${file}`)
@@ -340,7 +344,7 @@ export function initHMR(Vue: any): void {
   }
 
   // Buat instance HMR client
-  hmrInstance = new HMRClient(Vue)
+  hmrInstance = new HMRClient()
 
   // Simpan di Vue prototype untuk akses dari komponen
   Vue.prototype.$hmr = hmrInstance
