@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vue Steroids Boilerplate</title>
+  <meta name="description" content="Vue 2.7.16 - Reborn with built-in HTTP client, state management, dynamic components, and more." />
+  
+  <!-- TailwindCSS -->
+  <link rel="stylesheet" href="public/css/tailwind.css" />
+  
+  <!-- Vue Steroids -->
+  <script src="public/js/vue/vue.js"></script>
+  
+  <style>
+    [v-cloak] { display: none; }
+    .fade-enter-active, .fade-leave-active {
+      transition: opacity 0.3s ease;
+    }
+    .fade-enter, .fade-leave-to {
+      opacity: 0;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <div id="app" v-cloak>
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b border-gray-200">
+      <div class="max-w-6xl mx-auto px-4">
+        <div class="flex justify-between items-center h-16">
+          <!-- Logo -->
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">VS</div>
+            <span class="font-semibold text-gray-800">Vue Steroids</span>
+            <span class="text-xs text-gray-400 hidden sm:inline">v2.7.16</span>
+          </div>
+          
+          <!-- Navigation Links -->
+          <div class="flex items-center gap-1 sm:gap-2">
+            <button @click="currentView = 'home'" :class="navClass('home')" class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors">
+              <span class="hidden sm:inline">Dashboard</span>
+              <span class="sm:hidden">🏠</span>
+            </button>
+            <button @click="currentView = 'store'" :class="navClass('store')" class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors">
+              <span class="hidden sm:inline">Store Demo</span>
+              <span class="sm:hidden">📦</span>
+            </button>
+            <button @click="currentView = 'api'" :class="navClass('api')" class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors">
+              <span class="hidden sm:inline">API Demo</span>
+              <span class="sm:hidden">🌐</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-4 py-8">
+      <!-- Dashboard View -->
+      <div v-if="currentView === 'home'" class="space-y-6">
+        <!-- Hero Section -->
+        <div class="bg-gradient-to-br from-emerald-500 to-emerald-700 rounded-2xl p-8 text-white">
+          <h1 class="text-3xl font-bold mb-2">🚀 Vue Steroids</h1>
+          <p class="text-emerald-100 text-lg mb-4">Vue 2.7.16 — Reborn with built-in superpowers</p>
+          <div class="flex flex-wrap gap-3">
+            <span class="px-3 py-1 bg-white/20 rounded-full text-sm">⚡ HTTP Client</span>
+            <span class="px-3 py-1 bg-white/20 rounded-full text-sm">🏪 State Management</span>
+            <span class="px-3 py-1 bg-white/20 rounded-full text-sm">🔄 Dynamic Components</span>
+            <span class="px-3 py-1 bg-white/20 rounded-full text-sm">🖥️ SSR Bundler</span>
+            <span class="px-3 py-1 bg-white/20 rounded-full text-sm">🎨 TailwindCSS</span>
+          </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 text-lg">🔢</div>
+              <div>
+                <p class="text-sm text-gray-500">Counter</p>
+                <p class="text-2xl font-bold text-gray-800">{{ count }}</p>
+              </div>
+            </div>
+            <div class="flex gap-2">
+              <button @click="decrement" class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium transition-colors">−1</button>
+              <button @click="resetCount" class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium transition-colors">↺</button>
+              <button @click="increment" class="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-medium transition-colors">+1</button>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center text-purple-600 text-lg">⏱️</div>
+              <div>
+                <p class="text-sm text-gray-500">Waktu</p>
+                <p class="text-2xl font-bold text-gray-800" v-text="currentTime"></p>
+              </div>
+            </div>
+            <p class="text-xs text-gray-400">Live update setiap detik</p>
+          </div>
+
+          <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center text-emerald-600 text-lg">✅</div>
+              <div>
+                <p class="text-sm text-gray-500">Produk Siap</p>
+                <p class="text-2xl font-bold text-gray-800">Ya</p>
+              </div>
+            </div>
+            <p class="text-xs text-gray-400">HTTP · Store · Router · Portal</p>
+          </div>
+        </div>
+
+        <!-- Todo Section -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+          <div class="p-6 border-b border-gray-100">
+            <h2 class="text-lg font-semibold text-gray-800">📋 Todo List <span class="text-sm text-gray-400 font-normal">(— demo state management)</span></h2>
+          </div>
+          <div class="p-6">
+            <div class="flex gap-2 mb-4">
+              <input 
+                v-model="newTodo" 
+                @keyup.enter="addTodo"
+                placeholder="Tambah todo baru..." 
+                class="flex-1 px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent text-sm"
+              />
+              <button @click="addTodo" :disabled="!newTodo.trim()" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 disabled:bg-gray-200 text-white rounded-lg text-sm font-medium transition-colors">
+                Tambah
+              </button>
+            </div>
+            <ul class="space-y-2">
+              <li v-for="(todo, index) in todos" :key="index" class="flex items-center justify-between p-3 bg-gray-50 rounded-lg group hover:bg-gray-100 transition-colors">
+                <label class="flex items-center gap-3 cursor-pointer flex-1">
+                  <input type="checkbox" v-model="todo.done" class="w-4 h-4 text-emerald-500 rounded border-gray-300 focus:ring-emerald-400" />
+                  <span :class="{'line-through text-gray-400': todo.done}" class="text-sm" v-text="todo.text"></span>
+                </label>
+                <button @click="removeTodo(index)" class="text-gray-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 text-sm">✕</button>
+              </li>
+              <li v-if="todos.length === 0" class="text-center py-8 text-gray-400 text-sm">
+                Belum ada todo. Tambahkan satu!
+              </li>
+            </ul>
+            <div v-if="todos.length > 0" class="mt-4 pt-4 border-t border-gray-100 flex justify-between text-xs text-gray-400">
+              <span>{{ remainingTodos }} dari {{ todos.length }} tersisa</span>
+              <button @click="clearDone" v-if="doneTodos > 0" class="text-red-400 hover:text-red-500 transition-colors">
+                Hapus selesai ({{ doneTodos }})
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Store Demo View -->
+      <div v-if="currentView === 'store'" class="space-y-6">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+          <div class="p-6 border-b border-gray-100">
+            <h2 class="text-lg font-semibold text-gray-800">🏪 Built-in Store <span class="text-sm text-gray-400 font-normal">(— seperti Vuex tanpa install)</span></h2>
+          </div>
+          <div class="p-6 space-y-6">
+            <div>
+              <h3 class="text-sm font-medium text-gray-500 mb-2">Global Counter (via $store)</h3>
+              <div class="flex items-center gap-4">
+                <span class="text-4xl font-bold text-emerald-600" v-text="$store.state.count"></span>
+                <div class="flex gap-2">
+                  <button @click="$store.commit('DECREMENT')" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium transition-colors">−1</button>
+                  <button @click="$store.commit('INCREMENT')" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg text-sm font-medium transition-colors">+1</button>
+                </div>
+              </div>
+              <p class="text-xs text-gray-400 mt-2">Menggunakan <code class="bg-gray-100 px-1 rounded">Vue.config.store</code></p>
+            </div>
+
+            <div class="border-t border-gray-100 pt-6">
+              <h3 class="text-sm font-medium text-gray-500 mb-2">mapState & mapGetters</h3>
+              <div class="grid grid-cols-2 gap-4">
+                <div class="p-4 bg-gray-50 rounded-lg">
+                  <p class="text-xs text-gray-400 mb-1">count (mapState)</p>
+                  <p class="text-xl font-bold" v-text="mappedCount"></p>
+                </div>
+                <div class="p-4 bg-gray-50 rounded-lg">
+                  <p class="text-xs text-gray-400 mb-1">isEven (getter)</p>
+                  <p class="text-xl font-bold" :class="isEven ? 'text-emerald-600' : 'text-orange-500'" v-text="isEven ? 'Genap ✅' : 'Ganjil 🔄'"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- API Demo View -->
+      <div v-if="currentView === 'api'" class="space-y-6">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+          <div class="p-6 border-b border-gray-100">
+            <h2 class="text-lg font-semibold text-gray-800">🌐 API Demo <span class="text-sm text-gray-400 font-normal">(— 11 method HTTP built-in)</span></h2>
+          </div>
+          <div class="p-6 space-y-4">
+            <div class="flex flex-wrap gap-2">
+              <button @click="testGet" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-medium transition-colors">GET</button>
+              <button @click="testPost" class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg text-sm font-medium transition-colors">POST</button>
+              <button @click="testError" class="px-4 py-2 bg-red-400 hover:bg-red-500 text-white rounded-lg text-sm font-medium transition-colors">Test Error</button>
+              <button @click="clearLog" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-sm font-medium transition-colors">Clear Log</button>
+            </div>
+
+            <div class="bg-gray-900 rounded-xl p-4 font-mono text-xs text-gray-300 overflow-x-auto">
+              <div v-if="apiLogs.length === 0" class="text-gray-500 italic">Klik salah satu button di atas untuk test HTTP request...</div>
+              <div v-for="(log, i) in apiLogs" :key="i" class="py-1 border-b border-gray-800 last:border-0">
+                <span :class="log.type === 'success' ? 'text-emerald-400' : log.type === 'error' ? 'text-red-400' : 'text-blue-400'" v-text="log.icon"></span>
+                <span class="text-gray-500" v-text="' ' + log.time"></span>
+                <span class="ml-2" :class="log.type === 'error' ? 'text-red-300' : 'text-gray-200'" v-html="log.msg"></span>
+              </div>
+            </div>
+            
+            <p class="text-xs text-gray-400">Method tersedia: <code class="bg-gray-100 px-1 rounded">this.get()</code> <code class="bg-gray-100 px-1 rounded">this.post()</code> <code class="bg-gray-100 px-1 rounded">this.put()</code> <code class="bg-gray-100 px-1 rounded">this.patch()</code> <code class="bg-gray-100 px-1 rounded">this.delete()</code> <code class="bg-gray-100 px-1 rounded">this.head()</code> <code class="bg-gray-100 px-1 rounded">this.options()</code></p>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+          <div class="p-6 border-b border-gray-100">
+            <h2 class="text-lg font-semibold text-gray-800">🧪 Dynamic Component</h2>
+          </div>
+          <div class="p-6">
+            <p class="text-sm text-gray-600 mb-4">Register komponen setelah <code class="bg-gray-100 px-1 rounded">new Vue()</code> menggunakan <code class="bg-gray-100 px-1 rounded">Vue.defineDynamicComponent()</code></p>
+            <button @click="registerDynamicComp" class="px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg text-sm font-medium transition-colors">
+              {{ dynamicCompRegistered ? '✅ Sudah Terdaftar' : '⚡ Register Dynamic Component' }}
+            </button>
+            <div v-if="dynamicCompRegistered" class="mt-4 p-4 bg-purple-50 border border-purple-200 rounded-lg">
+              <dynamic-greeting name="Vue Steroids"></dynamic-greeting>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-200 mt-12">
+      <div class="max-w-6xl mx-auto px-4 py-6 text-center text-xs text-gray-400">
+        <p>Vue Steroids v2.7.16 — <a href="https://github.com/oneaxxall/vue-steroids" target="_blank" class="text-emerald-500 hover:underline">Fork dari vuejs/vue</a></p>
+        <p class="mt-1">Dibuat dengan 💚 oleh komunitas, untuk komunitas</p>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // =========================================
+    // 1. Store Setup (seperti Vuex tanpa install)
+    // =========================================
+    Vue.config.store = {
+      state: {
+        count: 0
+      },
+      getters: {
+        isEven: function(state) { return state.count % 2 === 0 }
+      },
+      mutations: {
+        INCREMENT: function(state) { state.count++ },
+        DECREMENT: function(state) { state.count-- },
+        RESET: function(state) { state.count = 0 }
+      }
+    }
+
+    // =========================================
+    // 2. HTTP Config
+    // =========================================
+    Vue.config.axiosBaseURL = 'https://jsonplaceholder.typicode.com'
+    Vue.config.axiosTimeout = 5000
+
+    // Response interceptor — langsung return data
+    Vue.config.axiosResponseInterceptor = function(response) { return response.data }
+
+    // =========================================
+    // 3. Vue Instance
+    // =========================================
+    new Vue({
+      el: '#app',
+
+      // ==== MAP STATE/GETTERS ====
+      computed: Vue.util.extend({
+        mappedCount: function() { return this.$store.state.count },
+        isEven: function() { return this.$store.getters.isEven },
+        remainingTodos: function() {
+          return this.todos.filter(function(t) { return !t.done }).length
+        },
+        doneTodos: function() {
+          return this.todos.filter(function(t) { return t.done }).length
+        },
+        currentTime: function() {
+          var now = new Date()
+          return now.toLocaleTimeString('id-ID')
+        }
+      }, Vue.mapState ? Vue.mapState(['count']) : {}),
+
+      // ==== DATA ====
+      data: function() {
+        return {
+          currentView: 'home',
+          newTodo: '',
+          todos: [
+            { text: 'Belajar Vue Steroids', done: false },
+            { text: 'Buat dokumentasi', done: true },
+            { text: 'Deploy aplikasi', done: false }
+          ],
+          apiLogs: [],
+          dynamicCompRegistered: false,
+          timeInterval: null
+        }
+      },
+
+      // ==== METHODS ====
+      methods: {
+        // Navigation
+        navClass: function(view) {
+          return this.currentView === view 
+            ? 'bg-emerald-50 text-emerald-700 font-semibold' 
+            : 'text-gray-600 hover:bg-gray-100'
+        },
+
+        // Counter
+        increment: function() { this.$store.commit('INCREMENT') },
+        decrement: function() { this.$store.commit('DECREMENT') },
+        resetCount: function() { this.$store.commit('RESET') },
+
+        // Todo
+        addTodo: function() {
+          var text = this.newTodo.trim()
+          if (!text) return
+          this.todos.push({ text: text, done: false })
+          this.newTodo = ''
+        },
+        removeTodo: function(index) { this.todos.splice(index, 1) },
+        clearDone: function() {
+          this.todos = this.todos.filter(function(t) { return !t.done })
+        },
+
+        // API Demo — menggunakan built-in HTTP
+        testGet: function() {
+          this.addLog('⏳', 'info', 'GET /posts/1')
+          this.get('/posts/1').then(function(data) {
+            this.addLog('✅', 'success', 'GET berhasil: <strong>' + data.title + '</strong>')
+          }.bind(this)).catch(function(err) {
+            this.addLog('❌', 'error', 'GET gagal: ' + (err.message || 'Unknown'))
+          }.bind(this))
+        },
+
+        testPost: function() {
+          this.addLog('⏳', 'info', 'POST /posts')
+          this.post('/posts', {
+            title: 'Vue Steroids is awesome!',
+            body: 'Built-in HTTP client works perfectly.',
+            userId: 1
+          }).then(function(data) {
+            this.addLog('✅', 'success', 'POST berhasil! ID: <strong>' + data.id + '</strong>')
+          }.bind(this)).catch(function(err) {
+            this.addLog('❌', 'error', 'POST gagal: ' + (err.message || 'Unknown'))
+          }.bind(this))
+        },
+
+        testError: function() {
+          this.addLog('⏳', 'info', 'GET /nonexistent')
+          this.get('/nonexistent').then(function() {
+            this.addLog('✅', 'success', 'Uniknya berhasil (mungkin mock server)')
+          }.bind(this)).catch(function(err) {
+            this.addLog('❌', 'error', 'Error sesuai harapan: <strong>' + (err.response ? err.response.status : err.message) + '</strong>')
+          }.bind(this))
+        },
+
+        addLog: function(icon, type, msg) {
+          var now = new Date()
+          var time = now.toLocaleTimeString('id-ID')
+          this.apiLogs.unshift({ icon: icon, type: type, time: time, msg: msg })
+          if (this.apiLogs.length > 50) this.apiLogs.pop()
+        },
+
+        clearLog: function() { this.apiLogs = [] },
+
+        // Dynamic Component
+        registerDynamicComp: function() {
+          if (this.dynamicCompRegistered) return
+          
+          Vue.defineDynamicComponent('dynamic-greeting', {
+            props: ['name'],
+            template: '<div class="flex items-center gap-3"><span class="text-2xl">👋</span><div><p class="font-semibold text-purple-800">Hello, {{ name }}!</p><p class="text-xs text-purple-500">Component di-register SETELAH <code>new Vue()</code></p></div></div>'
+          })
+          
+          this.dynamicCompRegistered = true
+        }
+      },
+
+      // ==== LIFECYCLE ====
+      mounted: function() {
+        // Update waktu setiap detik
+        this.timeInterval = setInterval(function() {
+          this.$forceUpdate()
+        }.bind(this), 1000)
+
+        // Log startup
+        console.log('%c🚀 Vue Steroids Boilerplate', 'font-size:20px; font-weight:bold; color:#10b981')
+        console.log('%c🔥 Built-in: HTTP Client | State Management | Dynamic Components | SSR Bundler', 'font-size:12px; color:#6366f1')
+        console.log('%c📖 Dokumentasi: docs/steroids/', 'font-size:12px; color:#8b5cf6')
+        
+        // Test store
+        console.log('Store state:', this.$store.state)
+      },
+
+      beforeDestroy: function() {
+        if (this.timeInterval) clearInterval(this.timeInterval)
+      }
+    })
+  </script>
+</body>
+</html>
