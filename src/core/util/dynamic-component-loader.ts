@@ -163,15 +163,42 @@ function parseComponentFile(content: string): { script: string; template: string
 
 /**
  * Evaluate script content and extract component definition
- * Script should contain: module.exports = { ... }
+ * Supports both:
+ *   module.exports = { ... }  (CommonJS)
+ *   export default { ... }     (ES Module)
  */
 function evaluateScript(scriptContent: string): Record<string, any> {
   try {
     // Create a safe evaluation context
     const module: any = { exports: {} }
     const exports = module.exports
+    let result: any
 
-    // Wrap and evaluate the script
+    // Check if script uses ES module export default pattern
+    const hasExportDefault = /\bexport\s+default\b/.test(scriptContent)
+
+    if (hasExportDefault) {
+      // ES Module: rewrite export default → module.exports
+      // Handles: export default { ... }, export default function ..., export default class ...
+      const transformedScript = scriptContent
+        .replace(/\bexport\s+default\b/g, 'module.exports =')
+        .replace(/\bexport\s+const\b/g, 'const')
+        .replace(/\bexport\s+let\b/g, 'let')
+        .replace(/\bexport\s+var\b/g, 'var')
+        .replace(/\bexport\s+function\b/g, 'function')
+        .replace(/\bexport\s+class\b/g, 'class')
+
+      const wrappedScript = `(function(module, exports) {
+        ${transformedScript}
+      })`
+
+      const fn = eval(wrappedScript)
+      fn(module, exports)
+      
+      return module.exports || {}
+    }
+
+    // CommonJS: module.exports = { ... }
     const wrappedScript = `(function(module, exports) {
       ${scriptContent}
     })`
@@ -179,7 +206,7 @@ function evaluateScript(scriptContent: string): Record<string, any> {
     const fn = eval(wrappedScript)
     fn(module, exports)
 
-    return module.exports || {}
+    return module.exports || (typeof result === 'object' ? result : {})
   } catch (error) {
     warn(`Failed to evaluate component script: ${error}`)
     return {}

@@ -1,0 +1,25 @@
+{
+  "name": "vue-steroids",
+  "version": "2.7.18",
+  "description": "Vue steroids is a boilerplate for building Vue.js applications with a focus on performance, scalability, and maintainability. It includes a set of best practices, tools, and libraries to help developers create high-quality Vue.js applications quickly and efficiently.",
+  "scripts": {
+    "tailwind:watch": "chokidar \"public/css/*.css\" -c \"postcss public/css/input.css -o public/css/tailwind.css\" --initial",
+    "tailwind:build": "postcss public/css/input.css -o public/css/tailwind.css",
+    "hmr": "node scripts/hmr.js",
+    "start": "concurrently \"npm run tailwind:watch\" \"npm run hmr\"",
+    "dev": "concurrently \"npm run tailwind:watch\" \"npm run hmr\"",
+    "production": "concurrently \"./scripts/packjs\"  \"npm run tailwind:build\" \"npm run hmr\" \"node scripts/ssr.js\"",
+    "semiprod": "concurrently \"./scripts/packjs\"  \"npm run tailwind:watch\" \"npm run hmr\""
+  },
+  "dependencies": {
+    "ws": "^8.16.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.27",
+    "chokidar-cli": "^3.0.0",
+    "concurrently": "^8.2.2",
+    "postcss-cli": "^11.0.1",
+    "postcss-import": "^16.1.1",
+    "tailwindcss": "^3.4.19"
+  }
+}
