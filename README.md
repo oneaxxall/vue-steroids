@@ -419,7 +419,7 @@ npm install vue@2.7.16
 | **Component Loader** | Load from server via AJAX | [Read →](docs/steroids/DYNAMIC_COMPONENT_LOADER.md) |
 | **Auto-Resolve** | Automatic component fetching | [Read →](docs/steroids/AUTO_RESOLVE_COMPONENTS.md) |
 | **Build System** | Build pipeline, boilerplate generation, JS packing | [Read →](docs/steroids/BUILD_SYSTEM.md) |
-| **SSR Bundling** | Server-Side component bundling | [Read →](docs/steroids/CONFIGURATIONS.md#3-dynamic-component-loader) |
+| **SSR Bundler** | Server-Side component bundling server | [Read →](docs/steroids/SSR_BUNDLER.md) |
 | **Performance** | Optimization tips | [Read →](docs/steroids/DYNAMIC_COMPONENTS_PERFORMANCE.md) |
 | **Changelog** | All changes | [Read →](CHANGELOG.md) |
 
