@@ -2,6 +2,10 @@
 
 > **🍴 Fork of [vuejs/vue](https://github.com/vuejs/vue) (v2.7.16) with built-in modern features.**
 
+<p align="center">
+  <img src="docs/banner.jpeg" alt="Vue Steroids Banner" width="100%" />
+</p>
+
 <div align="center">
 
 ![Vue.js](https://img.shields.io/badge/Vue.js-2.7.16-42b883?style=for-the-badge&logo=vuedotjs&logoColor=white)
