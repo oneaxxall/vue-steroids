@@ -88,11 +88,3 @@ const server = http.createServer((req, res) => {
         res.end(data);
     });
 });
-
-server.listen(PORT, () => {
-    console.log(`\n🚀 Development Server`);
-    console.log(`   URL  : http://localhost:${PORT}`);
-    console.log(`   Root : ${ROOT}`);
-    console.log(`   File : ${path.join(ROOT, 'index.html')}`);
-    console.log(`\n   Press Ctrl+C to stop\n`);
-});
