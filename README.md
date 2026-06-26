@@ -26,6 +26,14 @@ This fork extends Vue 2.7.16 with built-in HTTP client (axios), state management
 
 ---
 
+## Preview
+
+<p align="center">
+  <img src="docs/preview.png" alt="Vue Steroids App Preview" width="100%" />
+</p>
+
+---
+
 ## Features
 
 ### The Problem

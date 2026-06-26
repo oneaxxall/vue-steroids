@@ -26,6 +26,14 @@ Fork ini memperkaya Vue 2.7.16 dengan HTTP client (axios) built-in, state manage
 
 ---
 
+## Pratinjau
+
+<p align="center">
+  <img src="docs/preview.png" alt="Pratinjau Aplikasi Vue Steroids" width="100%" />
+</p>
+
+---
+
 ## Fitur
 
 ### Masalah
