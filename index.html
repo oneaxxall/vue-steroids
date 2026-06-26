@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue 2.7 Modular Framework | Feature Explorer</title>
+    <link rel="preconnect" href="examples/https://fonts.googleapis.com">
+    <link rel="preconnect" href="examples/https://fonts.gstatic.com" crossorigin>
+    <link href="examples/https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #ec4899;
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --glass: rgba(30, 41, 59, 0.7);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.6;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(236, 72, 153, 0.1) 0%, transparent 50%);
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #818cf8, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+            letter-spacing: -1px;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 60px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 30px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(99, 102, 241, 0.5);
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(99, 102, 241, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .card-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .card-desc {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 25px;
+            flex-grow: 1;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+            margin-right: 8px;
+        }
+
+        .badge-new {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+
+        /* Unit Tests Section */
+        .section-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section-title::after {
+            content: '';
+            height: 1px;
+            background: var(--border);
+            flex-grow: 1;
+        }
+
+        .test-list {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            padding: 20px;
+        }
+
+        .test-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .test-item:last-child {
+            border-bottom: none;
+        }
+
+        .test-info h4 {
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+
+        .test-info p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .btn-test {
+            padding: 6px 16px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-main);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-test:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .footer {
+            margin-top: 80px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            padding-bottom: 40px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Vue 2.7 Modular Framework</h1>
+            <p>Ecosystem penjelajah fitur modern untuk arsitektur Vue 2.7 berbasis Odoo Modular UI.</p>
+            <div style="margin-top: 30px;">
+                <a href="examples/features/demo-all.html" class="btn-test" style="padding: 12px 30px; font-size: 1.1rem; background: var(--primary); border-color: var(--primary);">
+                    🚀 Launch All-in-One Demo
+                </a>
+            </div>
+        </header>
+
+        <div class="grid">
+            <!-- XML Props Feature -->
+            <a href="examples/index-props.html" class="card">
+                <div class="card-icon">🧩</div>
+                <div class="card-title">Odoo-Style XML Props</div>
+                <div class="card-desc">
+                    Implementasi parsing properti komponen melalui tag XML &lt;props&gt; dan &lt;field&gt;. Mendukung smart type casting dan evaluator ekspresi fleksibel.
+                </div>
+                <div>
+                    <span class="badge badge-new">New</span>
+                    <span class="badge">Modular</span>
+                </div>
+            </a>
+
+            <!-- Dynamic Components -->
+            <a href="examples/classic/index.html" class="card">
+                <div class="card-icon">🚀</div>
+                <div class="card-title">Dynamic Component Loader</div>
+                <div class="card-desc">
+                    Mendemonstrasikan pemuatan komponen secara asinkron via AJAX dengan registrasi otomatis ke registry global.
+                </div>
+                <div>
+                    <span class="badge">AJAX</span>
+                    <span class="badge">Async</span>
+                </div>
+            </a>
+
+            <!-- Integrated State -->
+            <a href="examples/composition/index.html" class="card">
+                <div class="card-icon">📦</div>
+                <div class="card-title">Integrated State (Store)</div>
+                <div class="card-desc">
+                    Sistem manajemen state bawaan yang reaktif, mendukung mutations, actions, dan getters tanpa library eksternal.
+                </div>
+                <div>
+                    <span class="badge">Reactive</span>
+                    <span class="badge">Internal Store</span>
+                </div>
+            </a>
+
+            <!-- Integrated HTTP (Axios) -->
+            <a href="examples/classic/index.html" class="card">
+                <div class="card-icon">🌐</div>
+                <div class="card-title">Integrated HTTP (Axios)</div>
+                <div class="card-desc">
+                    Akses langsung ke metode HTTP melalui <code>this.get</code>, <code>this.post</code>, dll. Sudah terintegrasi tanpa perlu instalasi tambahan.
+                </div>
+                <div>
+                    <span class="badge">Axios</span>
+                    <span class="badge">API</span>
+                </div>
+            </a>
+
+            <!-- Reactive Storage -->
+            <a href="examples/features/storage-demo.html" class="card">
+                <div class="card-icon">💾</div>
+                <div class="card-title">Reactive Local Storage</div>
+                <div class="card-desc">
+                    Manajemen storage otomatis yang sinkron dengan <strong>localStorage</strong> browser secara reaktif.
+                </div>
+            </a>
+
+            <!-- Built-in Router -->
+            <a href="examples/features/route-example.html" class="card">
+                <div class="card-icon">🛤️</div>
+                <div class="card-title">Built-in Route Watchers</div>
+                <div class="card-desc">
+                    Navigasi reaktif dengan deteksi segmen URL otomatis (path1-path5) tanpa library eksternal.
+                </div>
+            </a>
+
+            <!-- Smart Loading -->
+            <a href="examples/features/loading-demo.html" class="card">
+                <div class="card-icon">🌀</div>
+                <div class="card-title">Smart Loading (v-loading)</div>
+                <div class="card-desc">
+                    Directive premium untuk menampilkan overlay loading glassmorphism secara instan pada elemen apa pun.
+                </div>
+            </a>
+
+            <!-- Portal Engine -->
+            <a href="examples/features/portal-demo.html" class="card">
+                <div class="card-icon">🌀</div>
+                <div class="card-title">Portal Engine</div>
+                <div class="card-desc">
+                    Pindahkan konten komponen ke lokasi DOM mana pun (seperti modal/overlay) tanpa kehilangan context reaktif.
+                </div>
+                <div>
+                    <span class="badge">Built-in</span>
+                    <span class="badge">Portal</span>
+                </div>
+            </a>
+
+            <!-- Global Settings -->
+            <a href="examples/index-props.html" class="card">
+                <div class="card-icon">⚙️</div>
+                <div class="card-title">Global Framework Settings</div>
+                <div class="card-desc">
+                    Konfigurasi tersentralisasi untuk <code>autoFetchComponents</code>, <code>axiosBaseURL</code>, dan <code>axiosToken</code> melalui <code>Vue.config</code>.
+                </div>
+                <div>
+                    <span class="badge">Config</span>
+                    <span class="badge">Settings</span>
+                </div>
+            </a>
+
+            <!-- Custom Option Hooks -->
+            <a href="examples/classic/index.html" class="card">
+                <div class="card-icon">🔗</div>
+                <div class="card-title">Advanced Lifecycle Hooks</div>
+                <div class="card-desc">
+                    Opsi <code>hooks</code> tambahan untuk manajemen lifecycle yang lebih fleksibel, seperti penggunaan <code>onClickOutside</code> secara terintegrasi.
+                </div>
+                <div>
+                    <span class="badge">Lifecycle</span>
+                    <span class="badge">Hooks</span>
+                </div>
+            </a>
+        </div>
+
+        <div class="section-title">Unit Test Features</div>
+        
+        <div class="test-list">
+            <div class="test-item">
+                <div class="test-info">
+                    <h4>Component Core</h4>
+                    <p>test/unit/features/component</p>
+                </div>
+                <a href="examples/#" class="btn-test">View Specs</a>
+            </div>
+            <div class="test-item">
+                <div class="test-info">
+                    <h4>Global API</h4>
+                    <p>test/unit/features/global-api</p>
+                </div>
+                <a href="examples/#" class="btn-test">View Specs</a>
+            </div>
+            <div class="test-item">
+                <div class="test-info">
+                    <h4>Instance Methods</h4>
+                    <p>test/unit/features/instance</p>
+                </div>
+                <a href="examples/#" class="btn-test">View Specs</a>
+            </div>
+            <div class="test-item">
+                <div class="test-info">
+                    <h4>Option Merging</h4>
+                    <p>test/unit/features/options</p>
+                </div>
+                <a href="examples/#" class="btn-test">View Specs</a>
+            </div>
+            <div class="test-item">
+                <div class="test-info">
+                    <h4>V3 Composition API Bridge</h4>
+                    <p>test/unit/features/v3</p>
+                </div>
+                <a href="examples/#" class="btn-test">View Specs</a>
+            </div>
+        </div>
+
+        <div class="footer">
+            Built with ❤️ for High-End Odoo UI Architectures
+        </div>
+    </div>
+
+</body>
+</html>

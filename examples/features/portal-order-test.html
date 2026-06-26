@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Loading Order Test - Vue 2 Steroids</title>
+    <script src="../../dist/vue.js"></script>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text: #f8fafc;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .header {
+            width: 100%;
+            max-width: 800px;
+            background: var(--card);
+            padding: 1rem 2rem;
+            border-radius: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 1.25rem;
+            color: var(--primary);
+        }
+
+        .main-content {
+            width: 100%;
+            max-width: 800px;
+            background: var(--card);
+            padding: 2rem;
+            border-radius: 1rem;
+            border: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            margin-top: 1rem;
+        }
+
+        .btn:hover {
+            filter: brightness(1.1);
+            transform: translateY(-1px);
+        }
+
+        .portal-content {
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            border: 1px solid var(--primary);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .dynamic-box {
+            margin-top: 2rem;
+            padding: 2rem;
+            border: 2px dashed rgba(255,255,255,0.1);
+            border-radius: 1rem;
+            background: rgba(255,255,255,0.02);
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            background: #22c55e;
+            color: white;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            margin-left: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app">
+        <!-- HEADER (Target can be toggled) -->
+        <div class="header">
+            <div>
+                <h1>Dashboard</h1>
+                <small style="opacity: 0.5">Target: {{ showTarget ? 'Mounted' : 'Unmounted' }}</small>
+            </div>
+            
+            <!-- PORTAL TARGET (Toggled) -->
+            <portal-target v-if="showTarget" name="header-action"></portal-target>
+            <div v-else style="font-size: 0.75rem; color: #ef4444">Target is currently missing</div>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            <h2>Reverse Loading Order Test</h2>
+            <p>
+                1. Click <b>'Unmount Target'</b> first.<br>
+                2. Click <b>'Load Portal Content'</b>.<br>
+                3. Click <b>'Mount Target'</b> and see if content appears.
+            </p>
+
+            <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1rem;">
+                <button class="btn" @click="showTarget = !showTarget" :style="{ background: showTarget ? '#ef4444' : '#22c55e' }">
+                    {{ showTarget ? 'Unmount Target' : 'Mount Target' }}
+                </button>
+
+                <button class="btn" @click="showPortal = !showPortal">
+                    {{ showPortal ? 'Unload Portal' : 'Load Portal Content' }}
+                </button>
+            </div>
+
+            <!-- PORTAL (Can be loaded even if target is missing) -->
+            <div v-if="showPortal" class="dynamic-box">
+                <h3>I am the Portal <span class="badge">Active</span></h3>
+                <p>I am sending content to "header-action" right now.</p>
+
+                <portal to="header-action">
+                    <div class="portal-content">
+                        🚀 Content from "Early" Portal
+                        <button style="margin-left: 10px; cursor: pointer" @click="count++">Count: {{ count }}</button>
+                    </div>
+                </portal>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                showTarget: true,
+                showPortal: false,
+                count: 0
+            }
+        });
+    </script>
+</body>
+</html>

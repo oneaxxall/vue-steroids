@@ -1,0 +1,8 @@
+#!/bin/bash
+
+input=""
+while [ -z "$input" ]; do
+  read -p "Enter commit message: " input
+done
+
+git add . && git commit -m "$input" && git push

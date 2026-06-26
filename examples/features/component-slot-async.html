@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Async Component with Slots - Vue 2 Steroids</title>
+    <script src="../../dist/vue.js"></script>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text: #f8fafc;
+            --border: rgba(255,255,255,0.1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+        }
+
+        /* Mock styles for the async component slots */
+        .slot-header {
+            background: rgba(99, 102, 241, 0.2);
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            border-radius: 0.5rem 0.5rem 0 0;
+        }
+
+        .slot-content {
+            padding: 2rem;
+            background: var(--card);
+        }
+
+        .slot-footer {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1rem;
+            border-top: 1px solid var(--border);
+            border-radius: 0 0 0.5rem 0.5rem;
+            text-align: right;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app" class="container">
+        <h2>Async Component & Slots</h2>
+        <p>Memuat komponen secara asinkron dan mengisi slot-nya (header, content, footer).</p>
+
+        <div v-if="loading" style="text-align: center; padding: 2rem; opacity: 0.5;">
+            ⏳ Loading component...
+        </div>
+
+        <!-- PENGGUNAAN KOMPONEN ASINKRON -->
+        <async-layout v-if="!loading">
+
+            <!-- Isi Slot Header -->
+            <template v-slot:header>
+                <div class="slot-header">
+                    <h3 style="margin: 0;">Header Asinkron</h3>
+                </div>
+            </template>
+
+            <!-- Isi Slot Content (Default) -->
+            <template v-slot:content>
+                <div class="slot-content">
+                    <p>Konten ini dikirim dari parent ke dalam komponen yang baru saja di-load secara asinkron.</p>
+                    <p>Reaktivitas tetap terjaga: <strong>{{ count }}</strong></p>
+                    <button class="btn" @click="count++">Tambah Angka</button>
+                </div>
+            </template>
+
+            <!-- Isi Slot Footer -->
+            <template v-slot:footer>
+                <div class="slot-footer">
+                    <small>Footer Info - 2024</small>
+                </div>
+            </template>
+        </async-layout>
+
+        <div style="margin-top: 2rem; text-align: center;">
+            <button class="btn" @click="reload" style="background: #4b5563;">Reload Scenario</button>
+        </div>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                loading: true,
+                count: 0
+            },
+            async mounted() {
+                await this.init();
+            },
+            methods: {
+                async init() {
+                    this.loading = true;
+                    
+                    // Simulasi delay loading
+                    await new Promise(r => setTimeout(r, 800));
+
+                    /**
+                     * Menggunakan loadAsyncComponent untuk memuat file .tpl
+                     * Catatan: Karena ini di lingkungan lokal browser, kita arahkan ke file .tpl
+                     */
+                    const success = await this.loadAsyncComponent({
+                        name : "async-layout",
+                        path : "./component-slot-async.tpl"
+                    });
+                    console.log(success);
+                    this.loading = false;
+                },
+                reload() {
+                    location.reload();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

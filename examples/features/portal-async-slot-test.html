@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Async Slot Test - Vue 2 Steroids</title>
+    <script src="../../dist/vue.js"></script>
+    <style>
+        .box { border: 1px solid #ccc; padding: 10px; margin: 10px; }
+        .header { background: #fee2e2; padding: 5px; }
+        .content { background: #e0f2fe; padding: 5px; }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div v-if="loading">Loading...</div>
+        
+        <div v-else>
+            <h3>Parent Component</h3>
+            <async-comp>
+                <template v-slot:header>
+                    <div class="header">INI HEADER DARI PARENT</div>
+                </template>
+                <template v-slot:content>
+                    <div class="content">INI CONTENT DARI PARENT</div>
+                </template>
+            </async-comp>
+        </div>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                loading: true
+            },
+            async mounted() {
+                // Simulasi loadAsyncComponent
+                setTimeout(() => {
+                    Vue.component('async-comp', {
+                        template: `
+                            <div class="box">
+                                <h4>Async Component Child</h4>
+                                <div style="border: 1px dashed red; margin: 5px;">
+                                    <slot name="header">Header Default</slot>
+                                </div>
+                                <div style="border: 1px dashed blue; margin: 5px;">
+                                    <slot name="content">Content Default</slot>
+                                </div>
+                            </div>
+                        `
+                    });
+                    this.loading = false;
+                }, 500);
+            }
+        });
+    </script>
+</body>
+</html>

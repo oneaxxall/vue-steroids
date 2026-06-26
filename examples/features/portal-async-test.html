@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Async Portal Test - Vue 2 Steroids</title>
+    <script src="../../dist/vue.js"></script>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text: #f8fafc;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            display: grid;
+            gap: 2rem;
+        }
+
+        .panel {
+            background: var(--card);
+            padding: 2rem;
+            border-radius: 1rem;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .target-area {
+            border: 2px dashed #6366f1;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            margin: 0.5rem 0;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .portal-content {
+            background: #10b981;
+            color: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            animation: bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes bounceIn {
+            from { transform: scale(0.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .step-num {
+            background: var(--primary);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app" class="container">
+        <!-- PANEL 1: CONTROL CENTER -->
+        <div class="panel">
+            <h2>Scenario: Portal Loaded FIRST, Target SECOND</h2>
+            <p style="opacity: 0.7">Kita akan memuat konten dulu ke "angkasa", baru kemudian memasang "penerima" nya.</p>
+
+            <div class="step">
+                <div class="step-num">1</div>
+                <button class="btn" @click="loadPortal" :disabled="portalLoaded">
+                    Load Async Component (Contains Portal to "destination")
+                </button>
+            </div>
+
+            <div class="step">
+                <div class="step-num">2</div>
+                <button class="btn" @click="loadTarget" :disabled="!portalLoaded || targetLoaded" style="background: #10b981">
+                    Load Async Component (Contains Portal Target "destination")
+                </button>
+            </div>
+        </div>
+
+        <!-- PANEL 2: PORTAL SOURCE AREA -->
+        <div class="panel">
+            <h3>Source Area</h3>
+            <div v-if="portalLoaded" style="padding: 1rem; border: 1px solid rgba(255,255,255,0.1); border-radius: 0.5rem;">
+                <p>✅ Portal Component is mounted here.</p>
+                <!-- This component sends content to the portal -->
+                <component :is="'async-portal-source'"></component>
+            </div>
+            <div v-else style="opacity: 0.5">Waiting for Step 1...</div>
+        </div>
+
+        <!-- PANEL 3: TARGET AREA (This is where the target will eventually appear) -->
+        <div class="panel">
+            <h3>Target Area (Navbar/Footer/etc)</h3>
+            <div class="target-area">
+                <div v-if="targetLoaded" style="width: 100%">
+                    <p style="font-size: 0.75rem; color: #10b981; margin-bottom: 0.5rem;">✅ Portal-Target is now mounted here:</p>
+                    <component :is="'async-portal-target'"></component>
+                </div>
+                <div v-else style="opacity: 0.5">Waiting for Step 2...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // COMPONENT 1: The Source (Sends content)
+        const PortalSource = {
+            template: `
+                <div>
+                    <portal to="destination">
+                        <div class="portal-content">
+                            <strong>Hello!</strong><br>
+                            I was sent BEFORE the target was even born! 🚀
+                        </div>
+                    </portal>
+                </div>
+            `
+        };
+
+        // COMPONENT 2: The Target (Receives content)
+        const PortalTargetComp = {
+            template: `
+                <portal-target name="destination"></portal-target>
+            `
+        };
+
+        new Vue({
+            el: '#app',
+            data: {
+                portalLoaded: false,
+                targetLoaded: false
+            },
+            methods: {
+                async loadPortal() {
+                    console.log('Loading Portal Source...');
+                    // Simulate network delay
+                    await new Promise(r => setTimeout(r, 600));
+                    Vue.component('async-portal-source', PortalSource);
+                    this.portalLoaded = true;
+                },
+                async loadTarget() {
+                    console.log('Loading Portal Target...');
+                    // Simulate network delay
+                    await new Promise(r => setTimeout(r, 600));
+                    Vue.component('async-portal-target', PortalTargetComp);
+                    this.targetLoaded = true;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

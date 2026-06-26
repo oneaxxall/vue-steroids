@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue 2.7 Steroids | Built-in Route Demo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="../../dist/vue.js"></script>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --accent: #f43f5e;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            margin: 0;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--primary), #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Router specific styles */
+        .route-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            background: #f1f5f9;
+            padding: 20px;
+            border-radius: 12px;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.9rem;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .info-label {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .info-value {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .nav-btn {
+            background: white;
+            border: 1px solid var(--border);
+            padding: 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .nav-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
+        }
+
+        .nav-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 30px;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .breadcrumb-item {
+            color: var(--text-muted);
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .breadcrumb-item:hover {
+            color: var(--primary);
+        }
+
+        .breadcrumb-separator {
+            color: var(--border);
+        }
+
+        .log-container {
+            background: #1e293b;
+            color: #38bdf8;
+            padding: 20px;
+            border-radius: 12px;
+            font-family: 'Monaco', monospace;
+            font-size: 0.85rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .log-entry {
+            margin-bottom: 5px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding-bottom: 5px;
+        }
+
+        .badge {
+            background: #e0e7ff;
+            color: #4338ca;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app" class="container">
+        <div class="header">
+            <h1>Built-in Route Steroids</h1>
+            <p>Sistem navigasi reaktif terintegrasi dengan deteksi path-segment otomatis.</p>
+        </div>
+
+        <!-- Dynamic Breadcrumb -->
+        <div class="breadcrumb">
+            <span class="breadcrumb-item" @click="$route.push('/')">Home</span>
+            <template v-if="$route.path1">
+                <span class="breadcrumb-separator">/</span>
+                <span class="breadcrumb-item" @click="$route.push('/' + $route.path1)">{{ $route.path1 }}</span>
+            </template>
+            <template v-if="$route.path2">
+                <span class="breadcrumb-separator">/</span>
+                <span class="breadcrumb-item">{{ $route.path2 }}</span>
+            </template>
+        </div>
+
+        <!-- Current Route Monitor -->
+        <div class="card">
+            <div class="section-title">
+                <span>📍 Current Route State</span>
+                <span class="badge">REACTIVE</span>
+            </div>
+            
+            <div class="route-info">
+                <div class="info-item">
+                    <span class="info-label">Full Path</span>
+                    <span class="info-value">{{ $route.fullPath }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Current Path</span>
+                    <span class="info-value">{{ $route.path }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Hash</span>
+                    <span class="info-value">{{ $route.hash || '-' }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Query</span>
+                    <span class="info-value">{{ JSON.stringify($route.query) }}</span>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;">
+                <div class="info-item" v-for="i in 5" :key="i">
+                    <span class="info-label">Path {{i}}</span>
+                    <span class="info-value">{{ $route['path' + i] || '-' }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Controls -->
+        <div class="card">
+            <div class="section-title">🚀 Navigation Controls</div>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Klik tombol di bawah untuk mengubah URL tanpa reload halaman.</p>
+            
+            <div class="nav-grid">
+                <button class="nav-btn" :class="{active: $route.path === '/'}" @click="$route.push('/')">🏠 Home</button>
+                <button class="nav-btn" :class="{active: $route.path === '/dashboard'}" @click="$route.push('/dashboard')">📊 Dashboard</button>
+                <button class="nav-btn" :class="{active: $route.path1 === 'settings'}" @click="$route.push('/settings/profile')">⚙️ Profile Settings</button>
+                <button class="nav-btn" @click="$route.push({ path: '/search', query: { q: 'steroids', filter: 'active' } })">🔍 Search Query</button>
+                <button class="nav-btn" @click="$route.push($route.path + '#section-' + Math.floor(Math.random()*100))">⚓ Random Hash</button>
+            </div>
+
+            <div style="margin-top: 25px; display: flex; gap: 10px; border-top: 1px solid var(--border); padding-top: 20px;">
+                <button class="nav-btn" style="flex: 1" @click="$route.back()">⬅️ Back</button>
+                <button class="nav-btn" style="flex: 1" @click="$route.forward()">Forward ➡️</button>
+                <button class="nav-btn" style="flex: 1; border-color: var(--accent); color: var(--accent);" @click="$route.replace('/')">🔄 Replace with Home</button>
+            </div>
+        </div>
+
+        <!-- Watcher Logs -->
+        <div class="card">
+            <div class="section-title">📜 Reactive Watcher Logs</div>
+            <div class="log-container" id="log-box">
+                <div v-for="(log, index) in logs" :key="index" class="log-entry">
+                    <span style="color: #94a3b8;">[{{ log.time }}]</span> {{ log.message }}
+                </div>
+                <div v-if="logs.length === 0" style="color: #64748b;">Menunggu perubahan route...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                logs: []
+            },
+            watch: {
+                // Mendeteksi perubahan path secara utuh
+                '$route.path': function(newVal, oldVal) {
+                    this.addLog(`Path changed: ${oldVal} -> ${newVal}`);
+                },
+                // Mendeteksi perubahan hash saja
+                '$route.hash': function(newVal, oldVal) {
+                    this.addLog(`Hash changed: ${oldVal || 'none'} -> ${newVal}`);
+                },
+                // Mendeteksi perubahan segment pertama
+                '$route.path1': function(newVal, oldVal) {
+                    this.addLog(`Segment 1 (path1) changed: ${oldVal || 'none'} -> ${newVal || 'none'}`);
+                },
+                // Mendeteksi query parameter
+                '$route.query': {
+                    handler: function(newVal) {
+                        this.addLog(`Query updated: ${JSON.stringify(newVal)}`);
+                    },
+                    deep: true
+                }
+            },
+            methods: {
+                addLog(message) {
+                    const now = new Date();
+                    const time = now.getHours().toString().padStart(2, '0') + ':' + 
+                                 now.getMinutes().toString().padStart(2, '0') + ':' + 
+                                 now.getSeconds().toString().padStart(2, '0');
+                    
+                    this.logs.unshift({ time, message });
+                    
+                    // Auto scroll log box
+                    this.$nextTick(() => {
+                        const logBox = document.getElementById('log-box');
+                        logBox.scrollTop = 0;
+                    });
+                }
+            },
+            mounted() {
+                this.addLog('Router initialized and ready.');
+            }
+        });
+    </script>
+</body>
+</html>

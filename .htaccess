@@ -1,0 +1,30 @@
+RewriteEngine On
+
+# Jika request langsung ke index.html, skip
+RewriteCond %{REQUEST_URI} ^/index\.html$
+RewriteRule ^ - [L]
+
+
+# ============================================
+# HANDLE FILE EXTENSIONS (.tpl, .js, .css, .json, dll)
+# Jika ada extension TAPI file tidak ada → 404
+# ============================================
+RewriteCond %{REQUEST_URI} \.(tpl|js|css|json|html|htm|php|jpg|jpeg|png|gif|svg|ico|woff|woff2|ttf|otf|eot|map)$ [NC]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ - [R=404,L]
+
+# ============================================
+# SPA ROUTING: Redirect ke index.html
+# Hanya untuk URLs TANPA extension
+# ============================================
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.html [L]
+
+#Require all denied
+
+# ============================================
+# CUSTOM ERROR PAGES
+# ============================================
+ErrorDocument 404 /404.html

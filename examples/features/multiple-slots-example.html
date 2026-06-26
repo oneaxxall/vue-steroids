@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiple Slots Example - Vue 2 Steroids</title>
+    <script src="../../dist/vue.js"></script>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #1e293b;
+            --border: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+        }
+
+        /* Styling untuk Base Layout Component */
+        .layout-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .layout-header {
+            padding: 1.5rem;
+            background: #f1f5f9;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .layout-body {
+            padding: 2rem;
+        }
+
+        .layout-footer {
+            padding: 1rem 1.5rem;
+            background: #f8fafc;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+        }
+
+        .title { margin: 0; color: var(--primary); }
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            border: 1px solid var(--border);
+            background: white;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app" class="container">
+        <h2>Multiple Named Slots</h2>
+        <p>Contoh penggunaan beberapa slot (header, default, footer) dalam satu komponen.</p>
+
+        <!-- PENGGUNAAN COMPONENT DENGAN MULTIPLE SLOTS -->
+        <base-layout>
+            <!-- Slot Header -->
+            <template v-slot:header>
+                <h3 class="title">✨ Edit Profile</h3>
+            </template>
+
+            <!-- Slot Default (Tanpa Nama) -->
+            <div>
+                <p>Silakan isi detail profil Anda di bawah ini:</p>
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <input type="text" placeholder="Nama Lengkap" style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                    <input type="email" placeholder="Email" style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+            </div>
+
+            <!-- Slot Footer -->
+            <template v-slot:footer>
+                <button class="btn" @click="cancel">Cancel</button>
+                <button class="btn btn-primary" @click="save">Save Changes</button>
+            </template>
+        </base-layout>
+
+        <div v-if="lastAction" style="margin-top: 1rem; color: #6366f1; font-weight: bold; text-align: center;">
+            Last Action: {{ lastAction }}
+        </div>
+    </div>
+
+    <script>
+        // DEFINISI COMPONENT DENGAN MULTIPLE SLOTS
+        Vue.component('base-layout', {
+            template: `
+                <div class="layout-card">
+                    <!-- Named Slot: Header -->
+                    <header class="layout-header">
+                        <slot name="header">
+                            <!-- Default content jika slot kosong -->
+                            <strong>Default Header</strong>
+                        </slot>
+                    </header>
+
+                    <!-- Default Slot -->
+                    <main class="layout-body">
+                        <slot></slot>
+                    </main>
+
+                    <!-- Named Slot: Footer -->
+                    <footer class="layout-footer">
+                        <slot name="footer">
+                            <!-- Default content jika slot kosong -->
+                            <button class="btn">Close</button>
+                        </slot>
+                    </footer>
+                </div>
+            `
+        });
+
+        new Vue({
+            el: '#app',
+            data: {
+                lastAction: ''
+            },
+            methods: {
+                save() {
+                    this.lastAction = 'Saved at ' + new Date().toLocaleTimeString();
+                },
+                cancel() {
+                    this.lastAction = 'Cancelled at ' + new Date().toLocaleTimeString();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

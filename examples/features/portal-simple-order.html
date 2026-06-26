@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Simple Portal Order - Vue 2 Steroids</title>
+    <script src="../../dist/vue.js"></script>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #f0f2f5; }
+        .box { border: 1px solid #ccc; padding: 15px; margin: 10px 0; background: white; border-radius: 8px; }
+        .target-active { border: 2px solid #6366f1; background: #eef2ff; }
+        .portal-msg { color: #6366f1; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- COMPONENT A: DILENGKAPI PORTAL (Langsung Render) -->
+        <div class="box">
+            <h3>Component A (Source)</h3>
+            <p>Saya sudah render dan mengirim data ke portal "simple-test".</p>
+            
+            <portal to="simple-test">
+                <span class="portal-msg">✨ Pesan dari Component A (Terkirim sebelum Target ada)</span>
+            </portal>
+        </div>
+
+        <hr>
+
+        <div v-if="loadingB" style="padding: 10px; color: #6366f1;">
+            ⏳ Sedang memuat Component B (Simulasi delay 2 detik)...
+        </div>
+        <button v-else @click="loadBWithDelay" style="padding: 10px; cursor: pointer;">
+            {{ showB ? 'Hapus Component B' : 'Load Component B (dengan Delay)' }}
+        </button>
+
+        <!-- COMPONENT B -->
+        <portal-name-target></portal-name-target>
+    </div>
+
+    <script>
+        
+        new Vue({
+            el: '#app',
+            data: {
+                showB: false,
+                loadingB: false
+            },
+            asyncComponents : [
+                '/vue-js/examples/features/portal-name-target'
+            ],
+            methods: {
+                loadBWithDelay() {
+                    if (this.showB) {
+                        this.showB = false;
+                        return;
+                    }
+                    
+                    this.loadingB = true;
+                    // Simulasi delay menggunakan setTimeout
+                    setTimeout(() => {
+                        this.loadingB = false;
+                        this.showB = true;
+                    }, 2000);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

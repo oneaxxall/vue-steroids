@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue 2.7 XML Props - Proof of Concept</title>
+    <script src="../dist/vue.js"></script>
+    <style>
+        :root {
+            --primary: #714B67; /* Odoo Purple */
+            --bg: #f8f9fa;
+            --text: #333;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+        }
+
+        header {
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        h1 {
+            color: var(--primary);
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .odoo-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            padding: 24px;
+            border: 1px solid #eee;
+            margin-bottom: 24px;
+            transition: transform 0.2s;
+        }
+
+        .odoo-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+            color: var(--primary);
+        }
+
+        .card-desc {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .fields-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .field-item {
+            background: #f1f3f5;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .field-name {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .field-type {
+            color: #888;
+            font-size: 0.8rem;
+        }
+
+        .badge {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app" class="container">
+        <header>
+            <h1>Odoo-Style XML Props PoC</h1>
+            <p>Mendemonstrasikan fitur parsing props via XML di dalam template Vue 2.7</p>
+        </header>
+
+        <!-- IMPLEMENTASI XML PROPS -->
+        <odoo-card :inline-props="{ 'ganteng' : true }">
+            <props>
+                <title>Data Produk Utama</title>
+                <description>Ini adalah contoh komponen yang dikonfigurasi menggunakan tag XML bersarang.</description>
+                
+                <!-- Tag <field> akan dikumpulkan menjadi array 'fields' -->
+                <field name="Internal Reference" type="char" domain="[user, '=' , '$user.id']" permission="{ read : 1 }"/>
+                <field name="Sale Price" type="float" />
+                <field name="Cost" type="float" />
+                <field name="Product Type" type="selection" />
+            </props>
+
+            <!-- Konten Default Slot -->
+            <div style="margin-top: 20px; font-style: italic; color: #999;">
+                * Data di atas diparsing dari tag &lt;props&gt; yang ada di dalam template.
+            </div>
+        </odoo-card>
+
+    </div>
+
+    <script>
+        // Registrasi Komponen
+        Vue.component('odoo-card', {
+            props: {
+                title: String,
+                description: String,
+                fields: Array , 
+                inlineProps : Array
+            },
+            template: `
+                <div class="odoo-card">
+                    <div class="badge">Dynamic Component</div>
+                    <div class="card-header">
+                        <h2 class="card-title">{{ title || 'Default Title' }}</h2>
+                    </div>
+                    <p class="card-desc">{{ description }}
+                    </p>
+
+                    <pre>
+                    {{ fields }}
+                    </pre>
+
+                    <div v-if="fields && fields.length" class="fields-list">
+                        <div v-for="field in fields" :key="field.name" class="field-item">
+                            <span class="field-name">{{ field.name }}</span>
+                            <span class="field-type">{{ field.type }}</span>
+                        </div>
+                    </div>
+                    
+                    <slot></slot>
+                </div>
+            `
+        });
+
+        // Inisialisasi Vue
+        new Vue({
+            el: '#app',
+            mounted() {
+                console.log('App Mounted');
+                console.log('Vue Core Version:', Vue.version);
+            }
+        });
+    </script>
+</body>
+</html>

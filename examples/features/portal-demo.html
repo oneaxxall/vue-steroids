@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Engine Demo - Vue 2 Steroids</title>
+    <script src="../../dist/vue.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            padding: 40px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .header {
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        .demo-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        .section {
+            background: white;
+            padding: 30px;
+            border-radius: 24px;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .section-title {
+            font-weight: 700;
+            font-size: 1.25rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .portal-source {
+            border: 2px dashed #e2e8f0;
+            padding: 20px;
+            border-radius: 16px;
+            background: #f1f5f9;
+        }
+        .portal-destination {
+            border: 2px solid #6366f1;
+            padding: 20px;
+            border-radius: 16px;
+            min-height: 100px;
+            background: #eef2ff;
+            position: relative;
+        }
+        .btn {
+            background: #6366f1;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn:hover {
+            background: #4f46e5;
+            transform: translateY(-2px);
+        }
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 32px;
+            width: 400px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            text-align: center;
+        }
+        code {
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+
+<div id="app" class="container">
+    <div class="header">
+        <h1>Portal Engine</h1>
+        <p>Render content anywhere in the DOM while maintaining component state.</p>
+    </div>
+
+    <div class="demo-grid">
+        <!-- Source Section -->
+        <div class="section">
+            <div class="section-title">
+                <span>📍</span> Source Component
+            </div>
+            <p>This content is defined here using <code>&lt;portal to="destination"&gt;</code></p>
+            
+            <div class="portal-source">
+                <button class="btn" @click="showModal = true">Open Modal via Portal</button>
+
+                <portal to="destination" v-if="portalActive">
+                    <div style="background: white; padding: 10px; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
+                        <strong>Sent from Portal!</strong>
+                        <div>Count: {{ count }}</div>
+                        <button @click="count++" style="margin-top:5px; font-size:12px;">Increment</button>
+                    </div>
+                </portal>
+
+                <portal to="modal-container" v-if="showModal">
+                    <div class="modal-overlay" @click.self="showModal = false">
+                        <div class="modal-content">
+                            <h2 style="margin-top:0">Portal Modal</h2>
+                            <p>I am rendered at the bottom of the body, but my state (count: {{ count }}) is kept here!</p>
+                            <button class="btn" @click="showModal = false">Close Modal</button>
+                        </div>
+                    </div>
+                </portal>
+            </div>
+
+            <div style="margin-top: 20px;">
+                <label>
+                    <input type="checkbox" v-model="portalActive"> Enable Content Portal
+                </label>
+            </div>
+        </div>
+
+        <!-- Target Section -->
+        <div class="section">
+            <div class="section-title">
+                <span>🎯</span> Target Destination
+            </div>
+            <p>This is <code>&lt;portal-target name="destination"&gt;</code></p>
+            
+            <div class="portal-destination">
+                <portal-target name="destination"></portal-target>
+                <div v-if="!portalActive" style="color: #94a3b8; font-style: italic; text-align: center; margin-top: 20px;">
+                    Portal is inactive
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section" style="margin-top: 30px;">
+        <div class="section-title">Global Modal Target</div>
+        <p>The <code>&lt;portal-target name="modal-container"&gt;</code> is placed right before the closing <code>&lt;/body&gt;</code> tag of this document.</p>
+    </div>
+
+    <!-- Global Modal Target -->
+    <portal-target name="modal-container"></portal-target>
+</div>
+
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            count: 0,
+            portalActive: true,
+            showModal: false
+        }
+    });
+</script>
+
+</body>
+</html>

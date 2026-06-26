@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue 2.7 Steroids | v-loading Directive Demo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="../../dist/vue.js"></script>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --border: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, var(--primary), #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .demo-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+            text-align: center;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .data-list {
+            width: 100%;
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        .data-item {
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .badge {
+            background: #e0e7ff;
+            color: var(--primary);
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app" class="container">
+        <div class="header">
+            <h1>Smart Loading Directive</h1>
+            <p>Implementasi <code>v-loading</code> premium dengan efek blur dan spinner SVG.</p>
+        </div>
+
+        <!-- Target Elemen -->
+        <div class="demo-card" v-loading="isLoading">
+            <h2 style="margin-top: 0; font-family: 'Outfit';">User Data Management</h2>
+            <p style="color: #64748b;">Kontainer ini akan tertutup overlay saat proses fetch berlangsung.</p>
+            
+            <div class="data-list" v-if="users.length > 0">
+                <div v-for="user in users" :key="user.id" class="data-item">
+                    <span>{{ user.name }}</span>
+                    <span class="badge">{{ user.role }}</span>
+                </div>
+            </div>
+
+            <button class="btn" @click="fetchData">
+                {{ users.length > 0 ? 'Refresh Data' : 'Fetch Initial Data' }}
+            </button>
+        </div>
+
+        <div style="margin-top: 40px; background: #f1f5f9; padding: 25px; border-radius: 15px; border-left: 5px solid var(--primary);">
+            <h4 style="margin-top: 0; font-family: 'Outfit';">Kenapa Menggunakan v-loading?</h4>
+            <ul style="margin-bottom: 0; font-size: 0.9rem; color: #475569; padding-left: 20px;">
+                <li><strong>Otomatis:</strong> Tidak perlu mengatur posisi overlay secara manual.</li>
+                <li><strong>Premium:</strong> Sudah termasuk efek Backdrop Blur (glassmorphism).</li>
+                <li><strong>Reusable:</strong> Bisa dipasang di button, div, card, atau body sekalipun.</li>
+                <li><strong>Logic-Driven:</strong> Cukup ikat ke variabel boolean.</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                isLoading: false,
+                users: []
+            },
+            methods: {
+                fetchData() {
+                    this.isLoading = true;
+                    
+                    // Simulasi delay API
+                    setTimeout(() => {
+                        this.users = [
+                            { id: 1, name: 'Ahmad Wahyudin', role: 'Architect' },
+                            { id: 2, name: 'Budi Santoso', role: 'Developer' },
+                            { id: 3, name: 'Siti Aminah', role: 'UI/UX Designer' }
+                        ];
+                        this.isLoading = false;
+                    }, 2000);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

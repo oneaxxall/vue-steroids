@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue 2.7 Modernized | Integrated Features Demo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #111827;
+            --card: #1f2937;
+            --accent: #6366f1;
+            --text: #f9fafb;
+            --text-muted: #9ca3af;
+            --border: #374151;
+        }
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+        }
+        .app-container {
+            width: 100%;
+            max-width: 800px;
+        }
+        .header {
+            margin-bottom: 40px;
+        }
+        h1 { font-family: 'Outfit', sans-serif; font-size: 2rem; margin-bottom: 10px; color: var(--accent); }
+        .feature-box {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        .feature-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #818cf8;
+        }
+        .status-badge {
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            font-weight: bold;
+        }
+        .btn {
+            padding: 10px 20px;
+            background: var(--accent);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            font-weight: 500;
+            transition: opacity 0.2s;
+        }
+        .btn:hover { opacity: 0.9; }
+        .btn-secondary { background: #374151; }
+        pre {
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            border: 1px solid #1e293b;
+        }
+        .menu-popover {
+            position: absolute;
+            background: #1f2937;
+            border: 1px solid #374151;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body>
+
+<div id="app" class="app-container">
+    <div class="header">
+        <h1>Integrated Features Demo</h1>
+        <p style="color: var(--text-muted)">Halaman ini menggabungkan seluruh fitur modern Vue 2.7 dalam satu ekosistem.</p>
+    </div>
+
+    <!-- 1. Global Settings & HTTP -->
+    <div class="feature-box">
+        <div class="feature-title">
+            <span>🌐 Integrated HTTP & Settings</span>
+            <span class="status-badge">ACTIVE</span>
+        </div>
+        <p style="font-size: 0.9rem; margin-bottom: 15px;">Menggunakan <code>this.get</code> (Axios) yang dikonfigurasi melalui <code>Vue.config</code>.</p>
+        <button class="btn" @click="fetchData">Simulate API Call</button>
+        <div v-if="apiData" style="margin-top: 15px;">
+            <pre>{{ apiData }}</pre>
+        </div>
+    </div>
+
+    <!-- 2. Integrated Store -->
+    <div class="feature-box">
+        <div class="feature-title">
+            <span>📦 Reactive Global Store</span>
+            <span class="status-badge">SYNCED</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <p>Current Theme: <strong>{{ theme }}</strong></p>
+                <p>Counter: <strong>{{ counter }}</strong></p>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn btn-secondary" @click="toggleTheme">Toggle Theme</button>
+                <button class="btn btn-secondary" @click="increment">Add +1</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. XML Props & Dynamic Component -->
+    <div class="feature-box">
+        <div class="feature-title">
+            <span>🧩 XML Props & Dynamic Loading</span>
+            <span class="status-badge">AUTO-RESOLVED</span>
+        </div>
+        
+        <!-- Komponen ini akan di-fetch secara otomatis karena tidak ada di registry -->
+        <!-- Dan diparsing menggunakan sistem XML Props baru -->
+        <product-card>
+            <props>
+                <title>Premium Smartphone X</title>
+                <price>999.99</price>
+                <is_active>true</is_active>
+                <field name="Internal Ref" value="ref-1002"/>
+                <field name="Permissions" value="Read"/>
+                <field name="Tags" value="Discound"/>
+            </props>
+
+            <div style="margin-top: 15px; color: #10b981; font-weight: 500;">
+                ✓ Konten ini ada di default slot
+            </div>
+        </product-card>
+    </div>
+
+    <!-- 4. Custom Option Hooks -->
+    <div class="feature-box" ref="profile-area" style="position: relative;">
+        <div class="feature-title">
+            <span>🔗 Advanced Hooks (Click Outside)</span>
+            <span class="status-badge">LISTENING</span>
+        </div>
+        <button class="btn" @click="showMenu = !showMenu">Open Profile Menu</button>
+        <div v-if="showMenu" class="menu-popover">
+            <div style="padding: 5px 15px;">👤 My Profile</div>
+            <div style="padding: 5px 15px;">⚙️ Settings</div>
+            <hr style="border-color: #374151; margin: 5px 0;">
+            <div style="padding: 5px 15px; color: #ef4444;">🚪 Logout</div>
+        </div>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 10px;">
+            Klik di luar area menu untuk menutup secara otomatis (via <code>hooks</code> option).
+        </p>
+    </div>
+</div>
+
+<script src="../../dist/vue.js"></script>
+<script>
+    // 1. Global Configuration
+    Vue.config.axiosBaseURL = 'https://jsonplaceholder.typicode.com';
+    Vue.config.componentPath = '/examples/'; // Arahkan ke folder tpl kita
+    Vue.config.componentExtension = '.tpl';
+    Vue.config.autoFetchComponents = false;
+
+    // 2. Global Store
+    Vue.config.store = {
+        state: {
+            theme: 'dark',
+            counter: 0
+        },
+        mutations: {
+            TOGGLE_THEME(state) {
+                state.theme = state.theme === 'dark' ? 'light' : 'dark';
+            },
+            INC(state) {
+                state.counter++;
+            }
+        },
+        actions: {
+            increment({ commit }) {
+                commit('INC');
+            }
+        }
+    };
+
+    const state = reactive("user", () => {
+        return {
+            firstname : 'Ahmad' , 
+            lastname : 'Wahyudin'
+        }
+    });
+
+    state.watch('firstname' , function(newValue , oldValue) {
+        console.log( "[ReactiveWatch]" , newValue , oldValue);
+    });
+
+    state.firstname = 'Masuk pak aji';
+
+    const localState = reactive({
+        value : 0
+    });
+
+    localState.watch('value' , function(newValue , oldValue) {
+        console.log( "[ReactiveWatchLocal]" , newValue , oldValue);
+    });
+
+    localState.value = 10;
+
+    new Vue({
+        el: '#app',
+        data: {
+            apiData: null,
+            showMenu: false
+        },
+        asyncComponents : [
+            '/vue-js/examples/features/product-card'
+        ],
+        // 3. Integrated Store Access
+        computed: {
+            ...Vue.mapState(['theme', 'counter'])
+        },
+        watch : {
+            '$reactive.user.firstname' : function(newValue , oldValue) {
+                console.log( "[ReactiveWatchVueInstance]" , newValue , oldValue);
+            }
+        },
+        mounted : function () {
+            const self = this;
+            setTimeout(function () {
+                console.log( "Reactive" , self.$reactive);
+            } , 1000);
+        },
+        // 4. Custom Option Hooks
+        hooks : function() {
+            // Menggunakan utilitas onClickOutside terintegrasi
+            this.onClickOutside('profile-area', function () {
+                this.showMenu = false;
+            });
+        },
+        api : {
+            fetchData : async function () {
+                try {
+                    const res = await this.get('/todos/1');
+                    this.apiData = res.data;
+                } catch (e) {
+                    this.apiData = { error: 'Failed to fetch' };
+                }
+            }
+        },
+        methods: {
+            // 5. Integrated HTTP Access
+            async fetchData() {
+                await this.api.fetchData();
+            },
+            toggleTheme() {
+                this.$store.commit('TOGGLE_THEME');
+            },
+            increment() {
+                this.$store.dispatch('increment');
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
