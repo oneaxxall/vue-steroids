@@ -15,4 +15,5 @@ packages/template-compiler/browser.js
 dist
 temp
 push
+pr
 types/v3-generated.d.ts
