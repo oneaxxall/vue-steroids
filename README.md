@@ -147,7 +147,7 @@ new Vue({
 - ✅ Auto token management
 - ✅ Error handling callbacks
 
-📖 [Baca dokumentasi lengkap →](patches/AXIOS_INTEGRATION.md)
+📖 [Baca dokumentasi lengkap →](docs/steroids/AXIOS_INTEGRATION.md)
 
 ---
 
@@ -197,7 +197,7 @@ new Vue({
 - ✅ Modules support
 - ✅ Helper functions (mapState, mapGetters, dll)
 
-📖 [Baca dokumentasi lengkap →](patches/STATE_MANAGEMENT.md)
+📖 [Baca dokumentasi lengkap →](docs/steroids/STATE_MANAGEMENT.md)
 
 ---
 
@@ -225,7 +225,7 @@ Vue.defineDynamicComponent('my-comp', {
 - ✅ Support kebab-case, camelCase, PascalCase
 - ✅ Global registry across all instances
 
-📖 [Baca dokumentasi lengkap →](patches/DYNAMIC_COMPONENTS_PERFORMANCE.md)
+📖 [Baca dokumentasi lengkap →](docs/steroids/DYNAMIC_COMPONENTS_PERFORMANCE.md)
 
 ---
 
@@ -272,7 +272,7 @@ module.exports = {
 - ✅ Success/error callbacks
 - ✅ Batch loading
 
-📖 [Baca dokumentasi lengkap →](patches/DYNAMIC_COMPONENT_LOADER.md)
+📖 [Baca dokumentasi lengkap →](docs/steroids/DYNAMIC_COMPONENT_LOADER.md)
 
 ---
 
@@ -306,7 +306,7 @@ header  →  /components/header.tpl
 - ✅ Fallback component
 - ✅ Duplicate prevention
 
-📖 [Baca dokumentasi lengkap →](patches/AUTO_RESOLVE_COMPONENTS.md)
+📖 [Baca dokumentasi lengkap →](docs/steroids/AUTO_RESOLVE_COMPONENTS.md)
 
 ---
 
@@ -375,12 +375,12 @@ npm install vue@2.7.16
 
 | Topic | Description | Link |
 |-------|-------------|------|
-| **State Management** | Built-in store seperti Vuex | [Read →](patches/STATE_MANAGEMENT.md) |
-| **HTTP Client** | Axios integration | [Read →](patches/AXIOS_INTEGRATION.md) |
-| **Dynamic Components** | Register components anytime | [Read →](patches/DYNAMIC_COMPONENTS_PERFORMANCE.md) |
-| **Component Loader** | Load from server via AJAX | [Read →](patches/DYNAMIC_COMPONENT_LOADER.md) |
-| **Auto-Resolve** | Automatic component fetching | [Read →](patches/AUTO_RESOLVE_COMPONENTS.md) |
-| **Performance** | Optimization tips | [Read →](patches/DYNAMIC_COMPONENTS_PERFORMANCE.md) |
+| **State Management** | Built-in store seperti Vuex | [Read →](docs/steroids/STATE_MANAGEMENT.md) |
+| **HTTP Client** | Axios integration | [Read →](docs/steroids/AXIOS_INTEGRATION.md) |
+| **Dynamic Components** | Register components anytime | [Read →](docs/steroids/DYNAMIC_COMPONENTS_PERFORMANCE.md) |
+| **Component Loader** | Load from server via AJAX | [Read →](docs/steroids/DYNAMIC_COMPONENT_LOADER.md) |
+| **Auto-Resolve** | Automatic component fetching | [Read →](docs/steroids/AUTO_RESOLVE_COMPONENTS.md) |
+| **Performance** | Optimization tips | [Read →](docs/steroids/DYNAMIC_COMPONENTS_PERFORMANCE.md) |
 | **Changelog** | All changes | [Read →](CHANGELOG.md) |
 
 ---
