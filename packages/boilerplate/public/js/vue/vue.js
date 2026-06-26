@@ -12164,11 +12164,9 @@
       if (!res && type === 'components') {
           var dynamicComponent = getDynamicComponent(id);
           if (dynamicComponent) {
-              debugLog("[Vue.resolveAsset] \u2705 Found dynamic component \"".concat(id, "\""));
               return dynamicComponent;
           }
           else {
-              debugLog("[Vue.resolveAsset] \u274C Not found \"".concat(id, "\", dynamic registry has:"), Object.keys(dynamicComponents));
               // AUTO FETCH: Try to fetch component from server if not found
               // Check component-level option first, fallback to global config
               // Default: true (unless explicitly set to false)

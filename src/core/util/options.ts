@@ -631,10 +631,8 @@ export function resolveAsset(
   if (!res && type === 'components') {
     const dynamicComponent = getDynamicComponent(id)
     if (dynamicComponent) {
-      debugLog(`[Vue.resolveAsset] ✅ Found dynamic component "${id}"`)
       return dynamicComponent
     } else {
-      debugLog(`[Vue.resolveAsset] ❌ Not found "${id}", dynamic registry has:`, Object.keys(dynamicComponents))
 
       // AUTO FETCH: Try to fetch component from server if not found
       // Check component-level option first, fallback to global config

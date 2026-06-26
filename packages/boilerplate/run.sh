@@ -50,9 +50,18 @@ fi
 echo "[4/4] Starting development server..."
 echo ""
 echo "============================================"
-echo "  Dev Server: http://localhost:8000"
-echo "  HMR       : ws://localhost:8003"
+echo "  Dev Server : http://localhost:8000"
+echo "  HMR        : ws://localhost:8003"
+echo "  SSR Bundler: http://localhost:8485"
 echo "============================================"
 echo ""
 
-node serve.js
+echo "Starting all services (tailwind, hmr, ssr, serve)..."
+echo "Press Ctrl+C to stop all"
+echo ""
+
+npx concurrently \
+  "npm run tailwind:watch" \
+  "npm run hmr" \
+  "npm run ssr" \
+  "npm run serve:dev"

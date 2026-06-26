@@ -9,8 +9,9 @@
     "tailwind:build": "postcss public/css/input.css -o public/css/tailwind.css",
     "pack": "node scripts/pack.js",
     "hmr": "node scripts/hmr.js",
-    "start": "concurrently \"npm run tailwind:watch\" \"npm run hmr\" \"npm run serve:dev\"",
-    "dev": "concurrently \"npm run tailwind:watch\" \"npm run hmr\" \"npm run serve:dev\"",
+    "start": "concurrently \"npm run tailwind:watch\" \"npm run hmr\" \"npm run ssr\" \"npm run serve:dev\"",
+    "dev": "concurrently \"npm run tailwind:watch\" \"npm run hmr\" \"npm run ssr\" \"npm run serve:dev\"",
+    "ssr": "node scripts/ssr.js",
     "build": "npm run tailwind:build && npm run pack",
     "production": "concurrently \"npm run build\" \"npm run serve:dev\""
   },

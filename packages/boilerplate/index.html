@@ -49,6 +49,10 @@
               <span class="hidden sm:inline">API Demo</span>
               <span class="sm:hidden">🌐</span>
             </button>
+            <button @click="currentView = 'ssr'" :class="navClass('ssr')" class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors">
+              <span class="hidden sm:inline">SSR Demo</span>
+              <span class="sm:hidden">📦</span>
+            </button>
           </div>
         </div>
       </div>
@@ -186,6 +190,36 @@
         </div>
       </div>
 
+      <!-- SSR Demo View -->
+      <div v-if="currentView === 'ssr'" class="space-y-6">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+          <div class="p-6 border-b border-gray-100">
+            <h2 class="text-lg font-semibold text-gray-800">📦 SSR Bundler <span class="text-sm text-gray-400 font-normal">(— komponen dimuat via server bundle)</span></h2>
+          </div>
+          <div class="p-6 space-y-4">
+            <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-4 text-sm text-emerald-800">
+              <strong>✅ SSR Aktif</strong> — Komponen di bawah dimuat via <code class="bg-emerald-100 px-1 rounded">asyncComponents</code> yang dibundle oleh SSR server di <code>localhost:8485</code>.
+              <code class="block mt-2 bg-emerald-100 px-2 py-1 rounded text-xs">Vue.defineDynamicComponent()</code> otomatis <code>$forceUpdate()</code> semua instance.
+            </div>
+
+            <div class="space-y-4">
+              <greeting-card name="Vue Steroids"></greeting-card>
+              <greeting-card name="SSR Bundler"></greeting-card>
+              <user-profile username="admin" role="Admin" joined="2024-01-15"></user-profile>
+              <user-profile username="editor" role="Editor" joined="2024-06-20"></user-profile>
+              <user-profile username="guest" role="User" joined="2025-03-10"></user-profile>
+            </div>
+
+            <div class="border-t border-gray-100 pt-4">
+              <p class="text-xs text-gray-400">
+                File <code class="bg-gray-100 px-1 rounded">.tpl</code> di <code>components/</code> dibundle oleh SSR server <code>scripts/ssr.js</code>.
+                Hasil bundle berupa <code>Vue.dynamicComponent()</code> yang di-inject sebagai <code>&lt;script&gt;</code>.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- API Demo View -->
       <div v-if="currentView === 'api'" class="space-y-6">
         <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
@@ -258,8 +292,15 @@
     }
 
     Vue.config.hmr = true  // Enable Hot Module Replacement (HMR) for development
-
     Vue.config.hmrFiles = ['tpl','vue','js','css','html']  // File extensions to watch for HMR;
+
+    // =========================================
+    // SSR Config (Server-Side Rendering Bundler)
+    // =========================================
+    Vue.config.serverSide = true       // Enable SSR bundling for async components
+    Vue.config.serverSideURL = 'http://localhost:8485/bundle'  // SSR Bundler endpoint
+    Vue.config.componentPath = '/components'  // Base path for component .tpl files
+    Vue.config.componentExtension = '.tpl'    // File extension for components
 
     // =========================================
     // 2. HTTP Config
@@ -307,6 +348,12 @@
           timeInterval: null
         }
       },
+
+      // ==== ASYNC COMPONENTS (dimuat via SSR Bundler) ====
+      asyncComponents: [
+        { name: 'greeting-card', path: '/components/greeting-card' },
+        { name: 'user-profile', path: '/components/user-profile' }
+      ],
 
       // ==== METHODS ====
       methods: {
@@ -390,10 +437,12 @@
 
       // ==== LIFECYCLE ====
       mounted: function() {
+        var self = this
+
         // Update waktu setiap detik
         this.timeInterval = setInterval(function() {
-          this.$forceUpdate()
-        }.bind(this), 1000)
+          self.$forceUpdate()
+        }, 1000)
 
         // Log startup
         console.log('%c🚀 Vue Steroids Boilerplate', 'font-size:20px; font-weight:bold; color:#10b981')
