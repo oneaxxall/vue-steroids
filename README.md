@@ -2,9 +2,12 @@
 
 > *"Terima kasih, Evan You - Vue changed my life."*
 
+> **🍴 Fork dari [vuejs/vue](https://github.com/vuejs/vue) — Project ini adalah fork dari Vue 2 (v2.7.16) dengan tambahan fitur-fitur modern built-in.**
+
 <div align="center">
 
 ![Vue.js](https://img.shields.io/badge/Vue.js-2.7.16-42b883?style=for-the-badge&logo=vuedotjs&logoColor=white)
+![Fork](https://img.shields.io/badge/Fork-vuejs%2Fvue-blue?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 ![Axios](https://img.shields.io/badge/HTTP%20Client-Axios%20Built--in-5a29e4?style=for-the-badge)
 ![State](https://img.shields.io/badge/State%20Management-Built--in-orange?style=for-the-badge)
@@ -428,6 +431,38 @@ npm install vue@2.7.16
    - Stable & tested
    - No breaking changes
    - Long-term support
+
+---
+
+## 🍴 Fork Information
+
+Project ini adalah **fork dari [vuejs/vue](https://github.com/vuejs/vue)** (Vue 2 v2.7.16).
+
+### Apa artinya "Fork"?
+
+- ✅ **Source code** diambil langsung dari repository resmi Vue 2 (commit terakhir Vue 2 sebelum end-of-life)
+- ✅ **Fitur baru** ditambahkan **di atas** kode asli Vue 2 — tidak ada kode Vue 3 yang di-backport selain Composition API
+- ✅ **100% backward compatible** — semua API Vue 2 original tetap berfungsi seperti biasa
+- ❌ **Bukan re-write** — kami tidak menulis ulang Vue dari awal
+- ❌ **Bukan Vue 3** — ini tetap Vue 2 dengan peningkatan
+
+### Perubahan pada Source Code
+
+Semua modifikasi dilakukan langsung di source code Vue 2:
+
+| Area | Perubahan |
+|------|-----------|
+| `src/core/instance/` | Ditambahkan `http.ts`, `rtc.ts` — methods HTTP & RTC di prototype Vue |
+| `src/core/global-api/` | Init HTTP client, store, router, dynamic components, dll |
+| `src/core/util/` | Ditambahkan `http.ts`, `store.ts`, `router.ts`, `rtc.ts`, `storage.ts`, `hooks.ts`, dll |
+| `src/v3/` | Backport Composition API (ref, reactive, computed, watch) dari Vue 3 |
+| `package.json` | Ditambahkan dependency `axios`, `workspace:*` untuk monorepo |
+
+### Source Code Asli
+
+Untuk melihat source code Vue 2 yang original (tanpa modifikasi), kunjungi:
+- **GitHub**: [https://github.com/vuejs/vue](https://github.com/vuejs/vue)
+- **Website**: [https://vuejs.org](https://vuejs.org)
 
 ---
 
