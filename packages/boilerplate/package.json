@@ -5,11 +5,12 @@
   "scripts": {
     "tailwind:watch": "chokidar \"public/css/*.css\" -c \"postcss public/css/input.css -o public/css/tailwind.css\" --initial",
     "tailwind:build": "postcss public/css/input.css -o public/css/tailwind.css",
+    "pack": "node scripts/pack.js",
     "hmr": "node scripts/hmr.js",
     "start": "concurrently \"npm run tailwind:watch\" \"npm run hmr\"",
     "dev": "concurrently \"npm run tailwind:watch\" \"npm run hmr\"",
-    "production": "concurrently \"./scripts/packjs\"  \"npm run tailwind:build\" \"npm run hmr\" \"node scripts/ssr.js\"",
-    "semiprod": "concurrently \"./scripts/packjs\"  \"npm run tailwind:watch\" \"npm run hmr\""
+    "build": "npm run tailwind:build && npm run pack",
+    "production": "concurrently \"npm run build\" \"npm run hmr\""
   },
   "dependencies": {
     "ws": "^8.16.0"

@@ -45,6 +45,7 @@
     "dev:ssr": "rollup -w -c scripts/config.js --environment TARGET:server-renderer",
     "dev:compiler": "rollup -w -c scripts/config.js --environment TARGET:compiler ",
     "build": "node scripts/build.js",
+    "build:boilerplate": "node scripts/build-boilerplate.js",
     "build:ssr": "npm run build -- runtime-cjs,server-renderer",
     "build:types": "rimraf temp && tsc --declaration --emitDeclarationOnly --outDir temp && api-extractor run && api-extractor run -c packages/compiler-sfc/api-extractor.json",
     "test": "npm run ts-check && npm run test:types && npm run test:unit && npm run test:e2e && npm run test:ssr && npm run test:sfc",
