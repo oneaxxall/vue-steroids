@@ -6,7 +6,7 @@
   <title>Vue Steroids Boilerplate</title>
   <meta name="description" content="Vue 2.7.16 - Reborn with built-in HTTP client, state management, dynamic components, and more." />
   
-  <!-- TailwindCSS -->
+  <!-- TailwindCSS --> 
   <link rel="stylesheet" href="public/css/tailwind.css" />
   
   <!-- Vue Steroids -->
@@ -25,9 +25,9 @@
 <body class="bg-gray-50 min-h-screen">
   <div id="app" v-cloak>
     <!-- Navigation -->
-    <nav class="bg-white shadow-sm border-b border-gray-200">
+    <nav class="bg-white shadow-sm border-b border-gray-200"> 
       <div class="max-w-6xl mx-auto px-4">
-        <div class="flex justify-between items-center h-16">
+        <div class="flex justify-between items-center h-16"> 
           <!-- Logo -->
           <div class="flex items-center gap-3">
             <div class="w-8 h-8 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">VS</div>
@@ -256,6 +256,8 @@
         RESET: function(state) { state.count = 0 }
       }
     }
+
+    Vue.config.hmr = true  // Enable Hot Module Replacement (HMR) for development
 
     // =========================================
     // 2. HTTP Config

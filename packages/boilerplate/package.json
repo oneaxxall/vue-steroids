@@ -4,13 +4,12 @@
   "description": "Vue steroids is a boilerplate for building Vue.js applications with a focus on performance, scalability, and maintainability. It includes a set of best practices, tools, and libraries to help developers create high-quality Vue.js applications quickly and efficiently.",
   "scripts": {
     "serve": "node serve.js",
-    "serve:dev": "node serve.js 8000",
     "tailwind:watch": "chokidar \"public/css/*.css\" -c \"postcss public/css/input.css -o public/css/tailwind.css\" --initial",
     "tailwind:build": "postcss public/css/input.css -o public/css/tailwind.css",
     "pack": "node scripts/pack.js",
     "hmr": "node scripts/hmr.js",
     "start": "concurrently \"npm run tailwind:watch\" \"npm run hmr\" \"npm run serve:dev\"",
-    "dev": "concurrently \"npm run tailwind:watch\" \"npm run hmr\" \"npm run serve:dev\"",
+    "dev": "concurrently \"npm run tailwind:watch\" \"npm run hmr\" \"npm run serve\"",
     "build": "npm run tailwind:build && npm run pack",
     "production": "concurrently \"npm run build\" \"npm run serve:dev\""
   },

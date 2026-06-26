@@ -325,13 +325,13 @@ let hmrInstance: HMRClient | null = null
 /**
  * Inisialisasi HMR client
  * Dipanggil dari global-api/index.ts saat Vue.initGlobalAPI()
+ * 
+ * Note: HMR client dibuat terlepas dari config.hmr value.
+ * Jika config.hmr = false, client dibuat tapi tidak connect.
+ * User bisa trigger connect manual via Vue.prototype.$hmr.connect()
+ * atau set Vue.config.hmr = true, lalu panggil Vue.connectHMR()
  */
 export function initHMR(Vue: any): void {
-  if (!config.hmr) {
-    debugLog('[HMR] HMR is disabled (Vue.config.hmr = false)')
-    return
-  }
-
   if (typeof window === 'undefined') {
     debugLog('[HMR] HMR not available in non-browser environment')
     return
@@ -343,18 +343,34 @@ export function initHMR(Vue: any): void {
     return
   }
 
-  // Buat instance HMR client
+  // Buat instance HMR client SELALU (meski disabled)
   hmrInstance = new HMRClient()
-
-  // Simpan di Vue prototype untuk akses dari komponen
   Vue.prototype.$hmr = hmrInstance
 
-  // Auto-connect saat Vue siap
-  Vue.nextTick(() => {
-    hmrInstance!.connect()
-  })
+  // Expose method untuk trigger connect manual
+  Vue.connectHMR = function() {
+    config.hmr = true
+    if (hmrInstance && !hmrInstance['connected']) {
+      hmrInstance.connect()
+    }
+  }
 
-  debugLog(`[HMR] Client initialized (ws://${config.hmrHost}:${config.hmrPort})`)
+  Vue.disconnectHMR = function() {
+    config.hmr = false
+    if (hmrInstance) {
+      hmrInstance.disconnect()
+    }
+  }
+
+  // Auto-connect hanya jika config.hmr sudah true saat init
+  if (config.hmr) {
+    Vue.nextTick(() => {
+      hmrInstance!.connect()
+    })
+    debugLog(`[HMR] Auto-connected (ws://${config.hmrHost}:${config.hmrPort})`)
+  } else {
+    debugLog('[HMR] Client created (idle). Set config.hmr = true or call Vue.connectHMR() to connect')
+  }
 }
 
 /**
